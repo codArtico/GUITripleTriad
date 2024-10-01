@@ -14,3 +14,14 @@ pygame.display.set_caption("Triple Triad")  # Muda o nome em cima do jogo
 largura = 1550
 altura = 800
 tela = pygame.display.set_mode((largura, altura))  # Seta o tamanho da Janela
+
+while True:
+    tela.fill((0, 0, 0))
+        
+    for event in pygame.event.get():  # Código para o botão de fechar funcionar
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            exit()
+    
+     # Atualizando tela
+    pygame.display.update()
