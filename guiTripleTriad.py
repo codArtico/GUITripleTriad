@@ -43,6 +43,12 @@ botaoLargura = (600, 600)  # Tamanho original do botão
 botaoCaminho = os.path.join('imagens', 'botao.png')
 botao = pygame.image.load(botaoCaminho)
 botao = pygame.transform.scale(botao, botaoLargura)
+bIniCaminho = os.path.join('imagens', 'iniciar.png')
+bIni = pygame.image.load(bIniCaminho)
+bIni = pygame.transform.scale(bIni, (550,140))
+bSairCaminho = os.path.join('imagens', 'sair.png')
+bSair = pygame.image.load(bSairCaminho)
+bSair = pygame.transform.scale(bSair, (550,140))
 
 # Definindo cores
 WHITE = (255, 255, 255)
@@ -91,12 +97,14 @@ def desenharMenu():
     botaoIniciarPosY = 120
     botaoIniciarPos = (botaoIniciarPosX, botaoIniciarPosY)
     tela.blit(botao, botaoIniciarPos)
+    tela.blit(bIni,(510,330))
 
     # Botão "Sair"
     botaoSairPosX = botaoIniciarPosX
     botaoSairPosY = botaoIniciarPosY + 150  # Ajuste a posição do botão "Sair"
     botaoSairPos = (botaoSairPosX, botaoSairPosY)
     tela.blit(botao, botaoSairPos)
+    tela.blit(bSair,(510,480))
 
     # Define as áreas clicáveis (apenas para verificar cliques)
     area_iniciar = (botaoIniciarPosX+37, botaoIniciarPosY+220, 540, 130)
