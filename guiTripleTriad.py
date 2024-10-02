@@ -76,7 +76,6 @@ offset_y = (altura - alturaTabuleiro) // 2  # Deslocamento pra centralizar o tab
 
 # Função para desenhar o tabuleiro
 def desenharTabuleiro():
-    tela.fill(WHITE)  # Preenche o fundo da tela de branco
     tela.blit(bg, (0, 0))
     for linha in range(linhas):
         for coluna in range(colunas):
@@ -95,8 +94,7 @@ def desenharTabuleiro():
 
 # Função para desenhar o menu inicial
 def desenharMenu():
-    tela.fill(WHITE)  # Preenche o fundo da tela de branco
-    tela.blit(bg, (0, 0))
+    tela.blit(bg, (0, 0)) # Exibe o fundo da tela Inicial
     tela.blit(logo, (580, 0))  # Exibe o título no topo
 
     # Botão "Iniciar"
