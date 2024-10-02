@@ -17,42 +17,49 @@ fps = pygame.time.Clock()  # Controlador de FPS
 running = True
 jogo_iniciado = False  # Variável que controla se o jogo começou ou não
 
-# Muda o ícone do jogo
-iconCaminho = os.path.join('imagens', 'icon.ico')
-icon = pygame.image.load(iconCaminho)
-pygame.display.set_icon(icon)
+def carregarImagens():
+    # Muda o ícone do jogo
+    iconCaminho = os.path.join('imagens', 'icon.ico')
+    icon = pygame.image.load(iconCaminho)
+    pygame.display.set_icon(icon)
 
-# Muda o bg do jogo
-bgCaminho = os.path.join('imagens', 'fundo.png')
-bg = pygame.image.load(bgCaminho)
+    # Muda o bg do jogo
+    bgCaminho = os.path.join('imagens', 'fundo.png')
+    bg = pygame.image.load(bgCaminho)
 
-# Carrega imagens dos slots
-slotCaminho = os.path.join('imagens', 'slot.jpg')
-imagemSlot = pygame.image.load(slotCaminho)
+    # Carrega imagens dos slots
+    slotCaminho = os.path.join('imagens', 'slot.jpg')
+    imagemSlot = pygame.image.load(slotCaminho)
 
-# Carrega imagem da borda
-bordaCaminho = os.path.join('imagens', 'grama.jpg')
-imagemBorda = pygame.image.load(bordaCaminho)
+    # Carrega imagem da borda
+    bordaCaminho = os.path.join('imagens', 'grama.jpg')
+    imagemBorda = pygame.image.load(bordaCaminho)
 
-logoCaminho = os.path.join('imagens', 'logo.png')
-logo = pygame.image.load(logoCaminho)
-logo = pygame.transform.scale(logo, (400, 400))
+    logoCaminho = os.path.join('imagens', 'logo.png')
+    logo = pygame.image.load(logoCaminho)
+    logo = pygame.transform.scale(logo, (400, 400))
 
-# Configurações do botão
-botaoLargura = (600, 600)  # Tamanho original do botão
-botaoCaminho = os.path.join('imagens', 'botao.png')
-botao = pygame.image.load(botaoCaminho)
-botao = pygame.transform.scale(botao, botaoLargura)
-bIniCaminho = os.path.join('imagens', 'iniciar.png')
-bIni = pygame.image.load(bIniCaminho)
-bIni = pygame.transform.scale(bIni, (550,140))
-bSairCaminho = os.path.join('imagens', 'sair.png')
-bSair = pygame.image.load(bSairCaminho)
-bSair = pygame.transform.scale(bSair, (550,140))
+    # Configurações do botão
+    botaoLargura = (600, 600)  # Tamanho original do botão
+    botaoCaminho = os.path.join('imagens', 'botao.png')
+    botao = pygame.image.load(botaoCaminho)
+    botao = pygame.transform.scale(botao, botaoLargura)
+    bIniCaminho = os.path.join('imagens', 'iniciar.png')
+    bIni = pygame.image.load(bIniCaminho)
+    bIni = pygame.transform.scale(bIni, (550,140))
+    bSairCaminho = os.path.join('imagens', 'sair.png')
+    bSair = pygame.image.load(bSairCaminho)
+    bSair = pygame.transform.scale(bSair, (550,140))
+
+    return bg, imagemSlot, imagemBorda, logo, botao, bIni, bSair
+
+bg, imagemSlot, imagemBorda, logo, botao, bIni, bSair = carregarImagens()
 
 # Definindo cores
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+GREEN = (0, 255, 0)
 
 # Config do tabuleiro
 linhas, colunas = 3, 3
