@@ -1,0 +1,5 @@
+theme: Música principal do jogo
+endGame: Sfx de fim de jogo
+placeCard: Sfx pra quando uma carta for jogada
+capture: Sfx pra captura de carta
+plus: Quando uma captura for feita pela regra plus

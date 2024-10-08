@@ -17,10 +17,16 @@ class Jogo:
         self.running = True
         self.jogo_iniciado = False
         pygame.display.set_caption("Triple Triad")
+
         self.bg, self.imagemSlot, self.imagemBorda, self.logo, self.botao, self.bIni, self.bSair = self.carregarImagens()
+        self.sfxCaptura,self.sfxColocarCarta,self.sfxPlus,self.sfxVitoria = self.carregarSfxs()
+
         self.board = Tabuleiro(self.tela, self.imagemSlot, self.imagemBorda, self.largura, self.altura)
         self.menu_inicial = Menu(self.tela, self.bg, self.logo, self.botao, self.bIni, self.bSair)
 
+        pygame.mixer.music.load(os.path.join('audios', 'theme.mp3'))
+        pygame.mixer.music.play(-1)
+        
     def carregarImagens(self):
         icon = pygame.image.load(os.path.join('imagens', 'icon.ico'))
         pygame.display.set_icon(icon)
@@ -39,7 +45,15 @@ class Jogo:
         bSair = pygame.transform.scale(bSair, (550, 140))
 
         return bg, imagemSlot, imagemBorda, logo, botao, bIni, bSair
+    
+    def carregarSfxs():
+        sfxCaptura = pygame.mixer.Sound(os.path.join('audios','capture.mp3'))
+        sfxColocarCarta = pygame.mixer.Sound(os.path.join('audios','placeCard.mp3'))
+        sfxPlus = pygame.mixer.Sound(os.path.join('audios','plus.mp3'))
+        sfxVitoria = pygame.mixer.Sound(os.path.join('audios','victory.mp3'))
 
+        return sfxCaptura,sfxColocarCarta,sfxPlus,sfxVitoria
+    
     def run(self):
         while self.running:
             self.fps.tick(30)

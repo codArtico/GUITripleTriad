@@ -67,9 +67,6 @@ def testMoldura(num):
                 running = False
                 pygame.quit()
 
-
-
-
 #testCartas()
 #testBaralho()
 testMoldura(1)
