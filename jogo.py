@@ -6,6 +6,7 @@ from tabuleiro import Tabuleiro
 from menu import Menu
 
 pygame.init()
+pygame.mixer.init()
 
 # Classe Game para gerenciar o fluxo do jogo
 class Jogo:
