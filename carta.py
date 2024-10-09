@@ -20,7 +20,14 @@ class Carta:
                 continue
 
             if 14 <= sum(v for v in valores) <= 30:
-                return ["A" if v == 10 else v for v in valores]
+                vetor = ["A" if v == 10 else v for v in valores]
+                valores = {
+                    'cima': vetor[0],
+                    'direita': vetor[1],
+                    'baixo': vetor[2],
+                    'esquerda': vetor[3]
+                }
+                return valores
 
     # @staticmethod
     # def lerValores(arquivo):
@@ -68,10 +75,10 @@ class Carta:
         self.visual.blit(desenho, (0, 0))
 
         # Renderiza os valores na carta usando índices
-        cima = self.fonte.render(str(self.valores[0]), True, (255, 255, 255))  # Acesso correto
-        direita = self.fonte.render(str(self.valores[1]), True, (255, 255, 255))
-        baixo = self.fonte.render(str(self.valores[2]), True, (255, 255, 255))
-        esquerda = self.fonte.render(str(self.valores[3]), True, (255, 255, 255))
+        cima = self.fonte.render(str(self.valores['cima']), True, (255, 255, 255))  # Acesso correto
+        direita = self.fonte.render(str(self.valores['direita']), True, (255, 255, 255))
+        baixo = self.fonte.render(str(self.valores['baixo']), True, (255, 255, 255))
+        esquerda = self.fonte.render(str(self.valores['esquerda']), True, (255, 255, 255))
 
         # Calcula as posições para desenhar os textos
         posicao_cima = (largura // 2 - cima.get_width() // 2, 40)
