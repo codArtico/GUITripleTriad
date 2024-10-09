@@ -22,9 +22,13 @@ class Jogo:
         pygame.display.set_caption("Triple Triad")
 
         self.bg, self.imagemSlot, self.imagemBorda, self.logo, self.botao, self.bIni, self.bSair = self.carregarImagens()
-        self.sfxCaptura,self.sfxColocarCarta,self.sfxPlus,self.sfxVitoria,self.sfxBotao,self.sfxEmpate = self.carregarSfxs()
+        self.sfxCaptura,self.sfxColocarCarta,self.sfxPlus,self.sfxVitoria,self.sfxBotao,self.sfxEmpate,self.sfxWinP1,self.sfxWinP2 = self.carregarSfxs()
 
-        self.board = Tabuleiro(self.tela, self.imagemSlot, self.imagemBorda, self.largura, self.altura)
+        
+        self.player1 = Player(1)
+        self.player2 = Player(2)
+
+        self.board = Tabuleiro(self.tela, self.imagemSlot, self.imagemBorda, self.largura, self.altura,self.player1,self.player2)
         self.menu_inicial = Menu(self.tela, self.bg, self.logo, self.botao, self.bIni, self.bSair)
 
         pygame.mixer.music.load(os.path.join('audios', 'theme.mp3'))
@@ -56,8 +60,10 @@ class Jogo:
         sfxVitoria = pygame.mixer.Sound(os.path.join('audios','victory.mp3'))
         sfxBotao = pygame.mixer.Sound(os.path.join('audios','button.wav'))
         sfxEmpate = pygame.mixer.Sound(os.path.join('audios','tie.ogg'))
+        sfxWinP1 = pygame.mixer.Sound(os.path.join('audios','WinP1.mp3'))
+        sfxWinP2 = pygame.mixer.Sound(os.path.join('audios','WinP2.mp3'))
 
-        return sfxCaptura,sfxColocarCarta,sfxPlus,sfxVitoria,sfxBotao,sfxEmpate
+        return sfxCaptura,sfxColocarCarta,sfxPlus,sfxVitoria,sfxBotao,sfxEmpate,sfxWinP1,sfxWinP2
     
     @staticmethod
     def checarVitoria(p1, p2):
@@ -69,8 +75,6 @@ class Jogo:
             return None
 
     def run(self):
-        player1 = Player(1)
-        player2 = Player(2)
         vez = 1
         while self.running:
             self.fps.tick(30)
@@ -102,24 +106,20 @@ class Jogo:
                                 if slot_rect.collidepoint(mouse_x, mouse_y):
                                     if self.board.slots[linha][coluna] is None:
                                         if vez == 1:
-                                            self.board.colocarCarta(Carta(player1), linha, coluna)
+                                            carta = Carta(self.player1)
+                                            self.board.colocarCarta(carta, linha, coluna)
                                             vez=2
                                         else:
-                                            self.board.colocarCarta(Carta(player2), linha, coluna)
+                                            carta = Carta(self.player2)
+                                            self.board.colocarCarta(carta, linha, coluna)
                                             vez=1
+                                        if(self.board.verificarVizinhas(linha,coluna,carta)):
+                                            self.sfxCaptura.play()
                                         self.sfxColocarCarta.play()
 
-                                    # Teste de troca de cores na captura + Pontuação
-                                    else:
-                                        if self.board.slots[linha][coluna].dono.numPlayer == 1:
-                                            self.board.slots[linha][coluna].dono.downPoint()
-                                            self.board.slots[linha][coluna].switchDono(player2)
-                                            self.board.slots[linha][coluna].dono.upPoint()
-                                           
-                                        else:
-                                            self.board.slots[linha][coluna].dono.downPoint()
-                                            self.board.slots[linha][coluna].switchDono(player1)
-                                            self.board.slots[linha][coluna].dono.upPoint()
+                                    
+                                    print(f'Pontuacao p1: {self.player1.pontos}')
+                                    print(f'Pontuacao p2: {self.player2.pontos}')
 
 
 
@@ -132,18 +132,18 @@ class Jogo:
             if self.board.cartasColocadas == 9:
 
                 #Verificação de vitória
-                if self.checarVitoria(player1,player2) == 1:
-                    self.sfxVitoria.play()
-                elif self.checarVitoria(player1,player2) == 2:
-                    self.sfxPlus.play()
+                if self.checarVitoria(self.player1,self.player2) == 1:
+                    self.sfxWinP1.play()
+                elif self.checarVitoria(self.player1,self.player2) == 2:
+                    self.sfxWinP2.play()
                 else:
                     self.sfxEmpate.play()
 
                 # Reset do jogo
                 self.jogo_iniciado = False
-                self.board = Tabuleiro(self.tela, self.imagemSlot, self.imagemBorda, self.largura, self.altura)
                 self.player1 = Player(1)
                 self.player2 = Player(2)
+                self.board = Tabuleiro(self.tela, self.imagemSlot, self.imagemBorda, self.largura, self.altura,self.player1,self.player2)
 
             pygame.display.update()
 
