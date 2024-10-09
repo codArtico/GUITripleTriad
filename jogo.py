@@ -103,6 +103,8 @@ class Jogo:
             # Condição de parada do jogo
             if self.board.cartasColocadas == 9:
                 self.sfxVitoria.play()
+                self.jogo_iniciado = False
+                self.board = Tabuleiro(self.tela, self.imagemSlot, self.imagemBorda, self.largura, self.altura)
             pygame.display.update()
 
 if __name__ == "__main__":
