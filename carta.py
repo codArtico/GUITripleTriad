@@ -44,11 +44,11 @@ class Carta:
         # Carrega a imagem do verso da carta
         try:
             if self.dono == 1:
-                desenho = pygame.image.load(os.path.join('imagens', 'versoCartaBlue.png')).convert_alpha()
+                desenho = pygame.image.load(os.path.join('imagens', 'fundoCartaBlue.png')).convert_alpha()
             elif self.dono == 2:
-                desenho = pygame.image.load(os.path.join('imagens', 'versoCartaRed.png')).convert_alpha()
+                desenho = pygame.image.load(os.path.join('imagens', 'fundoCartaRed.png')).convert_alpha()
             else:
-                desenho = pygame.image.load(os.path.join('imagens', 'versoCartaGreen.png')).convert_alpha()
+                desenho = pygame.image.load(os.path.join('imagens', 'fundoCartaGreen.png')).convert_alpha()
             desenho = pygame.transform.smoothscale(desenho, (largura, altura))
         except pygame.error as e:
             print(f"Erro ao carregar a imagem do verso da carta: {e}")
