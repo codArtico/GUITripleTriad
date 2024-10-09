@@ -1,6 +1,7 @@
 import pygame
 from baralho import *
 
+#unusable
 def testBaralho():
     caminho = "cartas/valoresTeste.txt"
     b = Baralho(caminho)
@@ -60,7 +61,7 @@ def testeCriarCarta():
     pygame.init()
     largura, altura = 1550, 800
     tela = pygame.display.set_mode((largura, altura))
-    carta = Carta()
+    carta = Carta(3) # Se 1, então: Blue // Se não, então: Red
     running = True
 
     while running:
@@ -72,8 +73,5 @@ def testeCriarCarta():
         tela.blit(carta.visual, (500, 500))
         pygame.display.flip()
 
-
-#testCartas()
-#testBaralho()
 #testMoldura(1)
 testeCriarCarta()

@@ -1,5 +1,4 @@
 import pygame
-
 class Tabuleiro:
     def __init__(self, tela, imagem_slot, imagem_borda, largura, altura):
         self.tela = tela
@@ -14,6 +13,10 @@ class Tabuleiro:
         self.offset_x = (largura - self.larguraTabuleiro) // 2
         self.offset_y = (altura - self.alturaTabuleiro) // 2
 
+        # Inicializa os slots do tabuleiro
+        self.slots = [[None for _ in range(self.colunas)] for _ in range(self.linhas)]
+        self.cartasColocadas = 0
+
     def desenharTabuleiro(self):
         for linha in range(self.linhas):
             for coluna in range(self.colunas):
@@ -23,3 +26,13 @@ class Tabuleiro:
                 borda = pygame.transform.scale(self.imagemBorda, (self.tamanhoSlotLargura + 2 * self.tamanhoBorda, self.tamanhoSlotAltura + 2 * self.tamanhoBorda))
                 self.tela.blit(borda, (pos_x - self.tamanhoBorda, pos_y - self.tamanhoBorda))
                 self.tela.blit(slot, (pos_x, pos_y))
+
+                # Desenha a carta se existir
+                if self.slots[linha][coluna] is not None:
+                    carta = self.slots[linha][coluna]
+                    self.tela.blit(carta.visual, (pos_x, pos_y))
+
+    def colocarCarta(self, carta, linha, coluna):
+        if 0 <= linha < self.linhas and 0 <= coluna < self.colunas:
+            self.slots[linha][coluna] = carta  # Coloca a carta no slot
+            self.cartasColocadas +=1

@@ -10,27 +10,27 @@ class Menu:
         self.bSair = bSair
 
         # Defina versões alternativas dos botões para o efeito de hover
-        self.bIni_hover = pygame.transform.scale(bIni, (550*1.2, 140*1.2))
-        self.bSair_hover = pygame.transform.scale(bSair, (550*1.2, 140*1.2))
+        self.bIni_hover = pygame.transform.smoothscale(bIni, (350*1.2, 85*1.2))
+        self.bSair_hover = pygame.transform.smoothscale(bSair, (350*1.2, 85*1.2))
 
     def desenharMenu(self):
         self.tela.blit(self.bg, (0, 0))
-        self.tela.blit(self.logo, (580, 0))
+        self.tela.blit(self.logo, (580, 50))
 
         # Obtém a posição do mouse
         mouse_x, mouse_y = pygame.mouse.get_pos()
 
         # Verifica se o mouse está sobre o botão "Iniciar"
         if self.is_hover(mouse_x, mouse_y, (510, 330, 550, 140)):
-            self.tela.blit(self.bIni_hover, (465, 300))  # Mostra a versão hover
+            self.tela.blit(self.bIni_hover, (580, 400))  # Mostra a versão hover
         else:
-            self.tela.blit(self.bIni, (510, 330))  # Mostra a versão normal
+            self.tela.blit(self.bIni, (610, 400))  # Mostra a versão normal
 
         # Verifica se o mouse está sobre o botão "Sair"
         if self.is_hover(mouse_x, mouse_y, (510, 480, 550, 140)):
-            self.tela.blit(self.bSair_hover, (465, 450))  # Mostra a versão hover
+            self.tela.blit(self.bSair_hover, (580, 510))  # Mostra a versão hover
         else:
-            self.tela.blit(self.bSair, (510, 480))  # Mostra a versão normal
+            self.tela.blit(self.bSair, (610, 510))  # Mostra a versão normal
 
         area_iniciar = (510, 330, 550, 140)
         area_sair = (510, 480, 550, 140)

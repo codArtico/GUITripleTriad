@@ -29,27 +29,10 @@ class Carta:
                 }
                 return valores
 
-    # @staticmethod
-    # def lerValores(arquivo):
-    #     valores = {}
-    #     try:
-    #         with open(arquivo, 'r') as dados:
-    #             linha = dados.readline().strip()
-    #             cima, direita, baixo, esquerda = linha.split('|')
-    #             valores['cima'] = int(cima)
-    #             valores['direita'] = int(direita)
-    #             valores['baixo'] = int(baixo)
-    #             valores['esquerda'] = int(esquerda)
-    #     except FileNotFoundError:
-    #         print(f'Erro: O arquivo {arquivo} não foi encontrado')
-    #     except ValueError:
-    #         print("Erro: Problema ao processar os dados do arquivo.")
-    #     return valores
-
-    def __init__(self):
+    def __init__(self,num):
         self.cor = None
         self.valores = self.gerarValor()
-        self.dono = None
+        self.dono = num
         pygame.font.init()
         self.fonte = pygame.font.Font(None, 30)
         self.visual = self.criarCarta()
@@ -60,8 +43,12 @@ class Carta:
         
         # Carrega a imagem do verso da carta
         try:
-            desenho = pygame.image.load(os.path.join('imagens', 'versoCartaBlue.png')).convert_alpha()
-            # Redimensiona a imagem para o tamanho da carta
+            if self.dono == 1:
+                desenho = pygame.image.load(os.path.join('imagens', 'versoCartaBlue.png')).convert_alpha()
+            elif self.dono == 2:
+                desenho = pygame.image.load(os.path.join('imagens', 'versoCartaRed.png')).convert_alpha()
+            else:
+                desenho = pygame.image.load(os.path.join('imagens', 'versoCartaGreen.png')).convert_alpha()
             desenho = pygame.transform.smoothscale(desenho, (largura, altura))
         except pygame.error as e:
             print(f"Erro ao carregar a imagem do verso da carta: {e}")
