@@ -1,6 +1,6 @@
 import pygame
 class Tabuleiro:
-    def __init__(self, tela, imagem_slot, imagem_borda, largura, altura):
+    def __init__(self, tela, imagem_slot, imagem_borda, largura, altura,p1,p2):
         self.tela = tela
         self.imagemSlot = imagem_slot
         self.imagemBorda = imagem_borda
@@ -16,6 +16,9 @@ class Tabuleiro:
         # Inicializa os slots do tabuleiro
         self.slots = [[None for _ in range(self.colunas)] for _ in range(self.linhas)]
         self.cartasColocadas = 0
+
+        self.p1=p1
+        self.p2=p2
 
     def desenharTabuleiro(self):
         for linha in range(self.linhas):
@@ -38,6 +41,7 @@ class Tabuleiro:
             self.cartasColocadas +=1
 
     def verificarVizinhas(self, linha, coluna, carta):
+        captura = False
         direcoes = {
             "cima": (-1, 0),
             "baixo": (1, 0),
@@ -71,16 +75,13 @@ class Tabuleiro:
 
                 if valorAtual > valorAdjacente:
                     if cartaAdjacente.dono != carta.dono:
-                        cartaAdjacente.dono = carta.dono
-                        self.atualizarPontuacao(
-                            carta.dono, 1
-                        )  # Atualiza a pontuação do jogador que capturou a carta
-                        self.atualizarPontuacao(
-                            self.getAdversario(carta.dono), -1
-                        )  # Atualiza a pontuação do adversário
+                        cartaAdjacente.switchDono(carta.dono)
+                        carta.dono.upPoint() # Atualiza a pontuação do jogador que capturou a carta
+                        self.getAdversario(carta.dono).downPoint()# Atualiza a pontuação do adversário
                         print(
-                            f"Carta na posição {ax},{ay} capturada por {carta.dono.nome} pela regra padrão!"
+                            f"Carta na posição {ax},{ay} capturada pela regra padrão!"
                         )
+                        captura = True
 
                 soma = valorAtual + valorAdjacente
                 somas.append((direcao, soma))
@@ -99,13 +100,15 @@ class Tabuleiro:
                 for direcao in direcoes_lista:
                     cartaAdj = cartasAdj[direcao]
                     if cartaAdj.dono != carta.dono:
-                        cartaAdj.dono = carta.dono
-                        atualizarPontuacao(
-                            carta.dono, 1
-                        )  # Atualiza a pontuação do jogador que capturou a carta
-                        atualizarPontuacao(
-                            self.getAdversario(carta.dono), -1
-                        )  # Atualiza a pontuação do adversário
+                        cartaAdjacente.switchDono(carta.dono)
+                        carta.dono.upPoint()
+                        self.getAdversario(carta.dono).downPoint
                         print(
-                            f"Carta na posição adjacente capturada por {carta.dono.nome} pela regra PLUS!"
+                            f"Carta na posição adjacente capturada pela regra PLUS!"
                         )
+                        captura = True
+        
+        return captura
+
+    def getAdversario(self, p):
+        return self.p1 if p == self.p2 else self.p2
