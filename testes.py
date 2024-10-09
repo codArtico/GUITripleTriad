@@ -1,15 +1,5 @@
 import pygame
-
-from carta import *
 from baralho import *
-def testCartas():
-    caminho = "cartas/valoresTeste.txt"
-
-    c = Carta(caminho)
-    print(c.valores['cima'])
-    print(c.valores['direita'])
-    print(c.valores['baixo'])
-    print(c.valores['esquerda'])
 
 def testBaralho():
     caminho = "cartas/valoresTeste.txt"
@@ -55,7 +45,6 @@ def testMoldura(num):
         # Aplica o filtro vermelho
         moldura_colorida.fill((255, 0, 0), special_flags=pygame.BLEND_MULT)  # Vermelho
 
-   
     tela.fill((0, 0, 0))
     tela.blit(moldura_colorida, (0, 0))
     pygame.display.flip()
@@ -67,6 +56,24 @@ def testMoldura(num):
                 running = False
                 pygame.quit()
 
+def testeCriarCarta():
+    pygame.init()
+    largura, altura = 1550, 800
+    tela = pygame.display.set_mode((largura, altura))
+    carta = Carta()
+    running = True
+
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                pygame.quit()
+        tela.fill((0,128,128))
+        tela.blit(carta.visual, (100, 100))
+        pygame.display.flip()
+
+
 #testCartas()
 #testBaralho()
-testMoldura(1)
+#testMoldura(1)
+testeCriarCarta()

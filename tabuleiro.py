@@ -1,11 +1,10 @@
 import pygame
-from pygame.locals import *
 
 class Tabuleiro:
-    def __init__(self, tela, imagemSlot, imagemBorda, largura, altura):
+    def __init__(self, tela, imagem_slot, imagem_borda, largura, altura):
         self.tela = tela
-        self.imagemSlot = imagemSlot
-        self.imagemBorda = imagemBorda
+        self.imagemSlot = imagem_slot
+        self.imagemBorda = imagem_borda
         self.linhas, self.colunas = 3, 3
         self.tamanhoSlotAltura = altura // 1.2 // self.linhas
         self.tamanhoSlotLargura = self.tamanhoSlotAltura

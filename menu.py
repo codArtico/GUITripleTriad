@@ -1,5 +1,4 @@
 import pygame
-import os
 
 class Menu:
     def __init__(self, tela, bg, logo, botao, bIni, bSair):
