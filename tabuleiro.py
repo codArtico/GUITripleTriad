@@ -36,3 +36,76 @@ class Tabuleiro:
         if 0 <= linha < self.linhas and 0 <= coluna < self.colunas:
             self.slots[linha][coluna] = carta  # Coloca a carta no slot
             self.cartasColocadas +=1
+
+    def verificarVizinhas(self, linha, coluna, carta):
+        direcoes = {
+            "cima": (-1, 0),
+            "baixo": (1, 0),
+            "esquerda": (0, -1),
+            "direita": (0, 1),
+        }
+
+        somas = []
+        cartasAdj = {}
+        oposto = {
+            "cima": "baixo",
+            "baixo": "cima",
+            "esquerda": "direita",
+            "direita": "esquerda",
+        }
+
+        for direcao, (dx, dy) in direcoes.items():
+            ax, ay = linha + dx, coluna + dy
+
+            if 0 <= ax < 3 and 0 <= ay < 3 and self.slots[ax][ay]:
+                cartaAdjacente = self.slots[ax][ay]
+
+                valorAtual = carta.valores[direcao]
+                valorAdjacente = cartaAdjacente.valores[oposto[direcao]]
+
+                # Convertendo valores 'A' para 10
+                if valorAtual == "A":
+                    valorAtual = 10
+                if valorAdjacente == "A":
+                    valorAdjacente = 10
+
+                if valorAtual > valorAdjacente:
+                    if cartaAdjacente.dono != carta.dono:
+                        cartaAdjacente.dono = carta.dono
+                        self.atualizarPontuacao(
+                            carta.dono, 1
+                        )  # Atualiza a pontuação do jogador que capturou a carta
+                        self.atualizarPontuacao(
+                            self.getAdversario(carta.dono), -1
+                        )  # Atualiza a pontuação do adversário
+                        print(
+                            f"Carta na posição {ax},{ay} capturada por {carta.dono.nome} pela regra padrão!"
+                        )
+
+                soma = valorAtual + valorAdjacente
+                somas.append((direcao, soma))
+                cartasAdj[direcao] = cartaAdjacente
+
+        # Implementação da regra PLUS
+        soma_dict = {}
+        for direcao, soma in somas:
+            if soma not in soma_dict:
+                soma_dict[soma] = []
+            soma_dict[soma].append(direcao)
+
+        # Verifica se há múltiplas direções com o mesmo valor de soma
+        for soma, direcoes_lista in soma_dict.items():
+            if len(direcoes_lista) > 1:
+                for direcao in direcoes_lista:
+                    cartaAdj = cartasAdj[direcao]
+                    if cartaAdj.dono != carta.dono:
+                        cartaAdj.dono = carta.dono
+                        atualizarPontuacao(
+                            carta.dono, 1
+                        )  # Atualiza a pontuação do jogador que capturou a carta
+                        atualizarPontuacao(
+                            self.getAdversario(carta.dono), -1
+                        )  # Atualiza a pontuação do adversário
+                        print(
+                            f"Carta na posição adjacente capturada por {carta.dono.nome} pela regra PLUS!"
+                        )

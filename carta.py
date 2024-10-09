@@ -1,7 +1,7 @@
 import pygame
 import os
 from random import randint
-
+from player import Player
 class Carta:
 
     @staticmethod
@@ -29,10 +29,10 @@ class Carta:
                 }
                 return valores
 
-    def __init__(self,num):
+    def __init__(self,player):
         self.cor = None
         self.valores = self.gerarValor()
-        self.dono = num
+        self.dono = player
         pygame.font.init()
         self.fonte = pygame.font.Font(None, 30)
         self.visual = self.criarCarta()
@@ -43,9 +43,9 @@ class Carta:
         
         # Carrega a imagem do verso da carta
         try:
-            if self.dono == 1:
+            if self.dono.numPlayer == 1:
                 desenho = pygame.image.load(os.path.join('imagens', 'fundoCartaBlue.png')).convert_alpha()
-            elif self.dono == 2:
+            elif self.dono.numPlayer == 2:
                 desenho = pygame.image.load(os.path.join('imagens', 'fundoCartaRed.png')).convert_alpha()
             else:
                 desenho = pygame.image.load(os.path.join('imagens', 'fundoCartaGreen.png')).convert_alpha()
