@@ -1,28 +1,47 @@
 import pygame
 import os
+from random import randint
 
 class Carta:
 
     @staticmethod
-    def lerValores(arquivo):
-        valores = {}
-        try:
-            with open(arquivo, 'r') as dados:
-                linha = dados.readline().strip()
-                cima, direita, baixo, esquerda = linha.split('|')
-                valores['cima'] = int(cima)
-                valores['direita'] = int(direita)
-                valores['baixo'] = int(baixo)
-                valores['esquerda'] = int(esquerda)
-        except FileNotFoundError:
-            print(f'Erro: O arquivo {arquivo} não foi encontrado')
-        except ValueError:
-            print("Erro: Problema ao processar os dados do arquivo.")
-        return valores
+    def gerarValor():
+        while True:
+            valores = [randint(1, 10) for _ in range(4)]
+
+            contagem = {}
+            for valor in valores:
+                if valor in contagem:
+                    contagem[valor] += 1
+                else:
+                    contagem[valor] = 1
+
+            if any(contagem[v] > 2 for v in contagem):
+                continue
+
+            if 14 <= sum(v for v in valores) <= 30:
+                return ["A" if v == 10 else v for v in valores]
+
+    # @staticmethod
+    # def lerValores(arquivo):
+    #     valores = {}
+    #     try:
+    #         with open(arquivo, 'r') as dados:
+    #             linha = dados.readline().strip()
+    #             cima, direita, baixo, esquerda = linha.split('|')
+    #             valores['cima'] = int(cima)
+    #             valores['direita'] = int(direita)
+    #             valores['baixo'] = int(baixo)
+    #             valores['esquerda'] = int(esquerda)
+    #     except FileNotFoundError:
+    #         print(f'Erro: O arquivo {arquivo} não foi encontrado')
+    #     except ValueError:
+    #         print("Erro: Problema ao processar os dados do arquivo.")
+    #     return valores
 
     def __init__(self):
         self.cor = None
-        self.valores = self.lerValores(os.path.join('cartas', 'valoresTeste.txt'))
+        self.valores = self.gerarValor()
         self.dono = None
         pygame.font.init()
         self.fonte = pygame.font.Font(None, 30)
@@ -48,17 +67,17 @@ class Carta:
         # Blita a imagem do verso na superfície da carta
         self.visual.blit(desenho, (0, 0))
 
-        # Renderiza os valores na carta
-        cima = self.fonte.render(str(self.valores['cima']), True, (255, 255, 255))
-        direita = self.fonte.render(str(self.valores['direita']), True, (255, 255, 255))
-        baixo = self.fonte.render(str(self.valores['baixo']), True, (255, 255, 255))
-        esquerda = self.fonte.render(str(self.valores['esquerda']), True, (255, 255, 255))
+        # Renderiza os valores na carta usando índices
+        cima = self.fonte.render(str(self.valores[0]), True, (255, 255, 255))  # Acesso correto
+        direita = self.fonte.render(str(self.valores[1]), True, (255, 255, 255))
+        baixo = self.fonte.render(str(self.valores[2]), True, (255, 255, 255))
+        esquerda = self.fonte.render(str(self.valores[3]), True, (255, 255, 255))
 
         # Calcula as posições para desenhar os textos
         posicao_cima = (largura // 2 - cima.get_width() // 2, 40)
-        posicao_direita = (largura - direita.get_width() - 60, altura // 2 - direita.get_height() // 2)
+        posicao_direita = (largura - direita.get_width() - 55, altura // 2 - direita.get_height() // 2)
         posicao_baixo = (largura // 2 - baixo.get_width() // 2, altura - baixo.get_height() - 40)
-        posicao_esquerda = (60, altura // 2 - esquerda.get_height() // 2)
+        posicao_esquerda = (55, altura // 2 - esquerda.get_height() // 2)
 
         # Blita os textos na superfície da carta
         self.visual.blit(cima, posicao_cima)
