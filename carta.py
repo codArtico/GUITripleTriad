@@ -80,3 +80,7 @@ class Carta:
         self.visual.blit(esquerda, posicao_esquerda)
 
         return self.visual
+
+    def switchDono(self,p):
+            self.dono = p
+            self.visual = self.criarCarta()

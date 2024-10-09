@@ -94,6 +94,13 @@ class Jogo:
                                             player = 2
                                         else:
                                             player = 1
+                                    # Teste de troca de cores na captura
+                                    else:
+                                        if self.board.slots[linha][coluna].dono == 1:
+                                            self.board.slots[linha][coluna].switchDono(2)
+                                        else:
+                                            self.board.slots[linha][coluna].switchDono(1)
+
 
             if not self.jogo_iniciado:
                 self.menu_inicial.desenharMenu()
