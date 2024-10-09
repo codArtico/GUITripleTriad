@@ -36,7 +36,7 @@ class Carta:
         try:
             desenho = pygame.image.load(os.path.join('imagens', 'versoCartaBlue.png')).convert_alpha()
             # Redimensiona a imagem para o tamanho da carta
-            desenho = pygame.transform.scale(desenho, (largura, altura))
+            desenho = pygame.transform.smoothscale(desenho, (largura, altura))
         except pygame.error as e:
             print(f"Erro ao carregar a imagem do verso da carta: {e}")
             desenho = pygame.Surface((largura, altura))  # Superfície de fallback
