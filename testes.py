@@ -69,7 +69,7 @@ def testeCriarCarta():
                 running = False
                 pygame.quit()
         tela.fill((0,128,128))
-        tela.blit(carta.visual, (100, 100))
+        tela.blit(carta.visual, (500, 500))
         pygame.display.flip()
 
 
