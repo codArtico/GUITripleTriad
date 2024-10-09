@@ -22,7 +22,7 @@ class Jogo:
         pygame.display.set_caption("Triple Triad")
 
         self.bg, self.imagemSlot, self.imagemBorda, self.logo, self.botao, self.bIni, self.bSair = self.carregarImagens()
-        self.sfxCaptura,self.sfxColocarCarta,self.sfxPlus,self.sfxVitoria,self.sfxBotao,self.sfxEmpate = self.carregarSfxs()
+        self.sfxCaptura,self.sfxColocarCarta,self.sfxPlus,self.sfxVitoria,self.sfxBotao,self.sfxEmpate,self.sfxWinP1,self.sfxWinP2 = self.carregarSfxs()
 
         self.board = Tabuleiro(self.tela, self.imagemSlot, self.imagemBorda, self.largura, self.altura)
         self.menu_inicial = Menu(self.tela, self.bg, self.logo, self.botao, self.bIni, self.bSair)
@@ -56,8 +56,10 @@ class Jogo:
         sfxVitoria = pygame.mixer.Sound(os.path.join('audios','victory.mp3'))
         sfxBotao = pygame.mixer.Sound(os.path.join('audios','button.wav'))
         sfxEmpate = pygame.mixer.Sound(os.path.join('audios','tie.ogg'))
+        sfxWinP1 = pygame.mixer.Sound(os.path.join('audios','WinP1.mp3'))
+        sfxWinP2 = pygame.mixer.Sound(os.path.join('audios','WinP2.mp3'))
 
-        return sfxCaptura,sfxColocarCarta,sfxPlus,sfxVitoria,sfxBotao,sfxEmpate
+        return sfxCaptura,sfxColocarCarta,sfxPlus,sfxVitoria,sfxBotao,sfxEmpate,sfxWinP1,sfxWinP2
     
     @staticmethod
     def checarVitoria(p1, p2):
@@ -120,6 +122,8 @@ class Jogo:
                                             self.board.slots[linha][coluna].dono.downPoint()
                                             self.board.slots[linha][coluna].switchDono(player1)
                                             self.board.slots[linha][coluna].dono.upPoint()
+                                    print(f'Pontuacao p1: {player1.pontos}')
+                                    print(f'Pontuacao p2: {player2.pontos}')
 
 
 
@@ -133,17 +137,17 @@ class Jogo:
 
                 #Verificação de vitória
                 if self.checarVitoria(player1,player2) == 1:
-                    self.sfxVitoria.play()
+                    self.sfxWinP1.play()
                 elif self.checarVitoria(player1,player2) == 2:
-                    self.sfxPlus.play()
+                    self.sfxWinP2.play()
                 else:
                     self.sfxEmpate.play()
 
                 # Reset do jogo
                 self.jogo_iniciado = False
                 self.board = Tabuleiro(self.tela, self.imagemSlot, self.imagemBorda, self.largura, self.altura)
-                self.player1 = Player(1)
-                self.player2 = Player(2)
+                player1 = Player(1)
+                player2 = Player(2)
 
             pygame.display.update()
 
