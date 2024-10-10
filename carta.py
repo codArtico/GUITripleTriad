@@ -29,10 +29,18 @@ class Carta:
                 }
                 return valores
 
+    # def cartaForcada(self):
+    #     valores = {}
+    #     valores['cima'] = 4
+    #     valores['direita'] = 4
+    #     valores['baixo'] = 4
+    #     valores['esquerda'] = 4
+    #     return valores
+        
+
     def __init__(self,player):
-        self.cor = None
-        self.valores = self.gerarValor()
         self.dono = player
+        self.valores = self.gerarValor()
         pygame.font.init()
         self.fonte = pygame.font.Font(None, 30)
         self.visual = self.criarCarta()
@@ -43,12 +51,12 @@ class Carta:
         
         # Carrega a imagem do verso da carta
         try:
-            if self.dono.numPlayer == 1:
+            if self.dono is None:  # Verifica se a carta não tem dono
+                desenho = pygame.image.load(os.path.join('imagens', 'fundoCartaGreen.png')).convert_alpha()
+            elif self.dono.numPlayer == 1:
                 desenho = pygame.image.load(os.path.join('imagens', 'fundoCartaBlue.png')).convert_alpha()
             elif self.dono.numPlayer == 2:
                 desenho = pygame.image.load(os.path.join('imagens', 'fundoCartaRed.png')).convert_alpha()
-            else:
-                desenho = pygame.image.load(os.path.join('imagens', 'fundoCartaGreen.png')).convert_alpha()
             desenho = pygame.transform.smoothscale(desenho, (largura, altura))
         except pygame.error as e:
             print(f"Erro ao carregar a imagem do verso da carta: {e}")
@@ -62,7 +70,7 @@ class Carta:
         self.visual.blit(desenho, (0, 0))
 
         # Renderiza os valores na carta usando índices
-        cima = self.fonte.render(str(self.valores['cima']), True, (255, 255, 255))  # Acesso correto
+        cima = self.fonte.render(str(self.valores['cima']), True, (255, 255, 255))
         direita = self.fonte.render(str(self.valores['direita']), True, (255, 255, 255))
         baixo = self.fonte.render(str(self.valores['baixo']), True, (255, 255, 255))
         esquerda = self.fonte.render(str(self.valores['esquerda']), True, (255, 255, 255))
@@ -80,6 +88,7 @@ class Carta:
         self.visual.blit(esquerda, posicao_esquerda)
 
         return self.visual
+
 
     def switchDono(self,p):
             self.dono = p

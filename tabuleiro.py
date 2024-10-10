@@ -93,6 +93,8 @@ class Tabuleiro:
             if soma not in soma_dict:
                 soma_dict[soma] = []
             soma_dict[soma].append(direcao)
+            print(f'CArta add: {direcao}')
+
 
         # Verifica se há múltiplas direções com o mesmo valor de soma
         for soma, direcoes_lista in soma_dict.items():
@@ -100,11 +102,11 @@ class Tabuleiro:
                 for direcao in direcoes_lista:
                     cartaAdj = cartasAdj[direcao]
                     if cartaAdj.dono != carta.dono:
-                        cartaAdjacente.switchDono(carta.dono)
+                        cartaAdj.switchDono(carta.dono)
                         carta.dono.upPoint()
-                        self.getAdversario(carta.dono).downPoint
+                        self.getAdversario(carta.dono).downPoint()
                         print(
-                            f"Carta na posição adjacente capturada pela regra PLUS!"
+                            f"Carta na posicao {direcao} capturada pela regra PLUS!"
                         )
                         captura = True
         
