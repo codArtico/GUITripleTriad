@@ -1,9 +1,11 @@
 import pygame
 class Tabuleiro:
-    def __init__(self, tela, imagem_slot, imagem_borda, largura, altura,p1,p2):
+    def __init__(self, tela, imagem_slot, imagem_borda, largura, altura,p1,p2,cartaViradaBlue,cartaViradaRed):
         self.tela = tela
         self.imagemSlot = imagem_slot
         self.imagemBorda = imagem_borda
+        self.imagemCartaViradaBlue = cartaViradaBlue
+        self.imagemCartaViradaRed = cartaViradaRed
         self.linhas, self.colunas = 3, 3
         self.tamanhoSlotAltura = altura // 1.2 // self.linhas
         self.tamanhoSlotLargura = self.tamanhoSlotAltura
@@ -20,7 +22,11 @@ class Tabuleiro:
         self.p1=p1
         self.p2=p2
 
-    def desenharTabuleiro(self):
+    def desenharTabuleiro(self, bg, vez):
+        self.tela.blit(bg,(0,0))
+        self.desenharCartasBlue(vez)
+        self.desenharCartasRed(vez)
+
         for linha in range(self.linhas):
             for coluna in range(self.colunas):
                 pos_x = self.offset_x + coluna * self.tamanhoSlotLargura
@@ -35,13 +41,19 @@ class Tabuleiro:
                     carta = self.slots[linha][coluna]
                     self.tela.blit(carta.visual, (pos_x, pos_y))
 
-    def colocarCarta(self, carta, linha, coluna):
+    def colocarCarta(self, carta, linha, coluna, vez):
         if 0 <= linha < self.linhas and 0 <= coluna < self.colunas:
             self.slots[linha][coluna] = carta  # Coloca a carta no slot
             self.cartasColocadas +=1
+            if vez == 1:
+                self.p1.numCartas -=1
+            else:
+                self.p2.numCartas -=1
 
     def verificarVizinhas(self, linha, coluna, carta):
         captura = False
+        plus = False
+
         direcoes = {
             "cima": (-1, 0),
             "baixo": (1, 0),
@@ -109,8 +121,68 @@ class Tabuleiro:
                             f"Carta na posicao {direcao} capturada pela regra PLUS!"
                         )
                         captura = True
+                        plus = True
         
-        return captura
+        return captura,plus
+
+    def desenharCartasBlue(self, vez):
+        alturaTela = self.tela.get_height()
+        posX = 50
+        posY = alturaTela // 2 - 300  # Altura da linha de 3
+
+        # Determina a imagem a ser usada com base na variável vez
+        if vez == 1:
+            cartas = [c.visual for c in self.p1.cartas_selecionadas]
+        else:
+            cartas = [self.imagemCartaViradaBlue] * self.p1.numCartas
+
+        if self.p1.numCartas > 3:
+            for i in range(3):
+                self.tela.blit(cartas[i], (posX, posY))
+                posY += 200
+
+            posX += 150
+            posY = alturaTela // 2 - 200  # Altura da linha de 2
+
+            for j in range(self.p1.numCartas - 3):
+                self.tela.blit(cartas[3 + j], (posX, posY))
+                posY += 200
+        else:
+            for i in range(self.p1.numCartas):
+                self.tela.blit(cartas[i], (posX, posY))
+                posY += 200
+
+
+    def desenharCartasRed(self, vez):
+        alturaTela = self.tela.get_height()
+        larguraTela = self.tela.get_width()
+
+        posX = larguraTela // 2 + 400
+        posY = alturaTela // 2 - 200  # Altura da linha de 2
+
+        # Determina a imagem a ser usada com base na variável vez
+        if vez == 2:
+            cartas = [c.visual for c in self.p2.cartas_selecionadas]
+        else:
+            cartas = [self.imagemCartaViradaRed] * self.p2.numCartas
+
+        if self.p2.numCartas > 3:
+            for i in range(self.p2.numCartas - 3):
+                self.tela.blit(cartas[i + 3], (posX, posY))
+                posY += 200
+
+            posX += 150
+            posY = alturaTela // 2 - 300  # Altura da linha de 3
+
+            for j in range(3):
+                self.tela.blit(cartas[j], (posX, posY))
+                posY += 200
+        else:
+            posX = larguraTela // 2 + 550
+            posY = alturaTela // 2 - 300
+            for i in range(self.p2.numCartas):
+                self.tela.blit(cartas[i], (posX, posY))
+                posY += 200
 
     def getAdversario(self, p):
         return self.p1 if p == self.p2 else self.p2
