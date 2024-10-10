@@ -61,7 +61,7 @@ class Mesa:
                 return carta
         return None
 
-    def distribuir_cartas(self, tela, bg):
+    def distribuir_cartas(self, tela, bg, sfxCardPick):
         while len(self.cartas_na_mesa) > 0:
             # Desenha as cartas e o turno atual
             self.desenhar_cartas_na_mesa(tela, bg)
@@ -80,6 +80,7 @@ class Mesa:
                     if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Verifica se o botão esquerdo foi clicado
                         mouse_x, mouse_y = pygame.mouse.get_pos()
                         carta_escolhida = self.selecionar_carta(mouse_x, mouse_y)
+                        sfxCardPick.play()
 
             if carta_escolhida:  # Apenas prossegue se uma carta foi escolhida
                 # Esconde a carta escolhida

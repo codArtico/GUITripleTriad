@@ -23,7 +23,7 @@ class Jogo:
         pygame.display.set_caption("Triple Triad")
 
         self.bg, self.imagemSlot, self.imagemBorda, self.logo, self.botao, self.bIni, self.bSair = self.carregarImagens()
-        self.sfxCaptura, self.sfxColocarCarta, self.sfxPlus, self.sfxVitoria, self.sfxBotao, self.sfxEmpate, self.sfxWinP1, self.sfxWinP2 = self.carregarSfxs()
+        self.sfxCaptura, self.sfxColocarCarta, self.sfxPlus, self.sfxVitoria, self.sfxBotao, self.sfxEmpate, self.sfxWinP1, self.sfxWinP2, self.sfxCardPick = self.carregarSfxs()
 
         self.player1 = Player(1)
         self.player2 = Player(2)
@@ -64,8 +64,9 @@ class Jogo:
         sfxEmpate = pygame.mixer.Sound(os.path.join('audios','tie.ogg'))
         sfxWinP1 = pygame.mixer.Sound(os.path.join('audios','WinP1.mp3'))
         sfxWinP2 = pygame.mixer.Sound(os.path.join('audios','WinP2.mp3'))
+        sfxCardPick = pygame.mixer.Sound(os.path.join('audios','cardPick.wav'))
 
-        return sfxCaptura, sfxColocarCarta, sfxPlus, sfxVitoria, sfxBotao, sfxEmpate, sfxWinP1, sfxWinP2
+        return sfxCaptura, sfxColocarCarta, sfxPlus, sfxVitoria, sfxBotao, sfxEmpate, sfxWinP1, sfxWinP2, sfxCardPick
 
     def selecionar_cartas(self):
         # Seleciona cartas para cada jogador
@@ -120,7 +121,7 @@ class Jogo:
                         if self.menu_inicial.click_botao(botao_iniciar, mouse_x, mouse_y):
                             self.sfxBotao.play()
                             self.mesa = Mesa(self.player1, self.player2)
-                            self.mesa.distribuir_cartas(self.tela,self.bg)
+                            self.mesa.distribuir_cartas(self.tela,self.bg,self.sfxCardPick)
                             self.limparTela()
                             self.jogo_iniciado = True
                             
@@ -149,9 +150,15 @@ class Jogo:
                                             carta = self.player2.cartas_selecionadas.pop(0)  # Retira a carta do jogador
                                             self.board.colocarCarta(carta, linha, coluna)
                                             vez = 1
-
-                                        if self.board.verificarVizinhas(linha, coluna, carta):
-                                            self.sfxCaptura.play()
+                                        
+                                        captura,plus = self.board.verificarVizinhas(linha, coluna, carta)
+                                        
+                                        if captura:
+                                            if plus:
+                                                self.sfxPlus.play()
+                                            else:
+                                                self.sfxCaptura.play()
+                                        
                                         self.sfxColocarCarta.play()
 
                                     print(f'Pontuação p1: {self.player1.pontos}')

@@ -42,6 +42,8 @@ class Tabuleiro:
 
     def verificarVizinhas(self, linha, coluna, carta):
         captura = False
+        plus = False
+
         direcoes = {
             "cima": (-1, 0),
             "baixo": (1, 0),
@@ -109,8 +111,9 @@ class Tabuleiro:
                             f"Carta na posicao {direcao} capturada pela regra PLUS!"
                         )
                         captura = True
+                        plus = True
         
-        return captura
+        return captura,plus
 
     def getAdversario(self, p):
         return self.p1 if p == self.p2 else self.p2
