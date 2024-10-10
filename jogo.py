@@ -103,6 +103,38 @@ class Jogo:
     def limparTela(self):
         self.tela.blit(self.bg,(0,0))
 
+    def processarEventoClique(self, posicao_mouse, vez):
+        print("Iniciou processamento de clique")
+        cartas = self.player1.cartas_selecionadas if vez == 1 else self.player2.cartas_selecionadas
+        numCartas = self.player1.numCartas if vez == 1 else self.player2.numCartas
+
+        alturaTela = self.tela.get_height()
+        posX = 50 if vez == 1 else self.tela.get_width() // 2 + 550
+        posY = alturaTela // 2 - 300
+
+        print(f"Posição do clique: {posicao_mouse}")
+
+        for i in range(numCartas):
+            rect_carta = pygame.Rect(posX, posY, 175, 175)
+
+            print(f"Verificando carta {i}: Retângulo = {rect_carta}")
+
+            # Verifica se o clique foi dentro da área da carta
+            if rect_carta.collidepoint(posicao_mouse):
+                print(f"Carta {i} foi clicada!")
+                return i  # Retorna o índice da carta clicada
+
+            posY += 200
+            if vez == 1 and i == 2 and numCartas > 3:  # Ajusta para a segunda linha para o player Blue
+                posX += 150
+                posY = alturaTela // 2 - 200
+            elif vez == 2 and i == 2 and numCartas > 3:  # Ajusta para a segunda linha para o player Red
+                posX -= 150
+                posY = alturaTela // 2 - 200
+
+        print("Nenhuma carta foi clicada")
+        return None  # Nenhuma carta foi clicada
+
     @staticmethod
     def checarVitoria(p1, p2):
         if p1.pontos > p2.pontos:
@@ -113,7 +145,9 @@ class Jogo:
             return None
 
     def run(self):
-        vez = 1
+        vez = 1  # 1 para jogador 1, 2 para jogador 2
+        carta_selecionada = None  # Armazena a carta selecionada
+
         while self.running:
             self.fps.tick(30)
             for event in pygame.event.get():
@@ -129,71 +163,81 @@ class Jogo:
                         if self.menu_inicial.click_botao(botao_iniciar, mouse_x, mouse_y):
                             self.sfxBotao.play()
                             self.mesa = Mesa(self.player1, self.player2)
-                            self.mesa.distribuir_cartas(self.tela,self.bg,self.sfxCardPick)
+                            self.mesa.distribuir_cartas(self.tela, self.bg, self.sfxCardPick)
                             self.limparTela()
                             self.jogo_iniciado = True
                             
                         elif self.menu_inicial.click_botao(botao_sair_menu, mouse_x, mouse_y):
                             pygame.quit()
                             exit()
-                        
-                        
-
                     else:
-                        for linha in range(self.board.linhas):
-                            for coluna in range(self.board.colunas):
-                                slot_rect = pygame.Rect(
-                                    self.board.offset_x + coluna * self.board.tamanhoSlotLargura,
-                                    self.board.offset_y + linha * self.board.tamanhoSlotAltura,
-                                    self.board.tamanhoSlotLargura,
-                                    self.board.tamanhoSlotAltura
-                                )
-                                if slot_rect.collidepoint(mouse_x, mouse_y):
-                                    if self.board.slots[linha][coluna] is None:
-                                        if vez == 1:
-                                            carta = self.player1.cartas_selecionadas.pop(0)  # Retira a carta do jogador
-                                            self.board.colocarCarta(carta, linha, coluna, vez)
-                                            vez = 2
-                                        else:
-                                            carta = self.player2.cartas_selecionadas.pop(0)  # Retira a carta do jogador
-                                            self.board.colocarCarta(carta, linha, coluna, vez)
-                                            vez = 1
-                                        
-                                        captura,plus = self.board.verificarVizinhas(linha, coluna, carta)
-                                        
-                                        if captura:
-                                            if plus:
-                                                self.sfxPlus.play()
+                        # Se uma carta foi selecionada
+                        if carta_selecionada:
+                            # Verifica se um slot foi clicado
+                            for linha in range(self.board.linhas):
+                                for coluna in range(self.board.colunas):
+                                    slot_rect = pygame.Rect(
+                                        self.board.offset_x + coluna * self.board.tamanhoSlotLargura,
+                                        self.board.offset_y + linha * self.board.tamanhoSlotAltura,
+                                        self.board.tamanhoSlotLargura,
+                                        self.board.tamanhoSlotAltura
+                                    )
+                                    if slot_rect.collidepoint(mouse_x, mouse_y):
+                                        if self.board.slots[linha][coluna] is None:  # Verifica se o slot está vazio
+                                            self.board.colocarCarta(carta_selecionada, linha, coluna, vez)
+                                            captura,plus = self.board.verificarVizinhas(linha,coluna,carta_selecionada)
+                                            if captura:
+                                                if plus:
+                                                    self.sfxPlus.play()
+                                                else:
+                                                    self.sfxCaptura.play()
+                                            if vez == 1:
+                                                self.player1.cartas_selecionadas.remove(carta_selecionada)  # Retira a carta do jogador 1
+                                                vez = 2  # Troca para o jogador 2
                                             else:
-                                                self.sfxCaptura.play()
-                                        
-                                        self.sfxColocarCarta.play()
+                                                self.player2.cartas_selecionadas.remove(carta_selecionada)  # Retira a carta do jogador 2
+                                                vez = 1  # Troca para o jogador 1
 
-                                    print(f'Pontuação p1: {self.player1.pontos}')
-                                    print(f'Pontuação p2: {self.player2.pontos}')
+                                            carta_selecionada = None  # Reseta a carta selecionada
+                                            print(f'Pontuação p1: {self.player1.pontos}')
+                                            print(f'Pontuação p2: {self.player2.pontos}')
+                                            break  # Sai do loop após colocar a carta
+                                        else:
+                                            print("Slot já ocupado, escolha outro.")
+                        else:
+                            # Verifica se uma carta foi clicada
+                            indice_carta_selecionada = self.processarEventoClique((mouse_x, mouse_y), vez)
+                            
+                            if indice_carta_selecionada is not None:
+                                if vez == 1:
+                                    carta_selecionada = self.player1.cartas_selecionadas[indice_carta_selecionada]  # Seleciona a carta do jogador 1
+                                else:
+                                    carta_selecionada = self.player2.cartas_selecionadas[indice_carta_selecionada]  # Seleciona a carta do jogador 2
 
-            if not self.jogo_iniciado:
-                self.menu_inicial.desenharMenu()
-            else:
-                self.board.desenharTabuleiro(self.bg,vez)
-
-            # Condição de parada do jogo
-            if self.board.cartasColocadas == 9:
-                # Verificação de vitória
-                if self.checarVitoria(self.player1, self.player2) == 1:
-                    self.sfxWinP1.play()
-                elif self.checarVitoria(self.player1, self.player2) == 2:
-                    self.sfxWinP2.play()
+                if not self.jogo_iniciado:
+                    self.menu_inicial.desenharMenu()
                 else:
-                    self.sfxEmpate.play()
+                    self.board.desenharTabuleiro(self.bg, vez)
 
-                # Reinicia o jogo
-                self.jogo_iniciado = False
-                self.player1 = Player(1)
-                self.player2 = Player(2)
-                self.board = Tabuleiro(self.tela, self.imagemSlot, self.imagemBorda, self.largura, self.altura, self.player1, self.player2, self.cartaViradaBlue, self.cartaViradaRed)
+                # Condição de parada do jogo
+                if self.board.cartasColocadas == 9:
+                    # Verificação de vitória
+                    if self.checarVitoria(self.player1, self.player2) == 1:
+                        self.sfxWinP1.play()
+                    elif self.checarVitoria(self.player1, self.player2) == 2:
+                        self.sfxWinP2.play()
+                    else:
+                        self.sfxEmpate.play()
+
+                    # Reinicia o jogo
+                    self.jogo_iniciado = False
+                    self.player1 = Player(1)
+                    self.player2 = Player(2)
+                    self.board = Tabuleiro(self.tela, self.imagemSlot, self.imagemBorda, self.largura, self.altura, self.player1, self.player2, self.cartaViradaBlue, self.cartaViradaRed)
 
             pygame.display.update()
+
+
 
 if __name__ == "__main__":
     game = Jogo()
