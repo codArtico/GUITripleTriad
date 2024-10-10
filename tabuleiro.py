@@ -22,10 +22,11 @@ class Tabuleiro:
         self.p1=p1
         self.p2=p2
 
-    def desenharTabuleiro(self, bg):
+    def desenharTabuleiro(self, bg, vez):
         self.tela.blit(bg,(0,0))
-        self.desenharCartasViradasBlue()
-        self.desenharCartasViradasRed()
+        self.desenharCartasBlue(vez)
+        self.desenharCartasRed(vez)
+
         for linha in range(self.linhas):
             for coluna in range(self.colunas):
                 pos_x = self.offset_x + coluna * self.tamanhoSlotLargura
@@ -124,52 +125,63 @@ class Tabuleiro:
         
         return captura,plus
 
-    def desenharCartasViradasBlue(self):
+    def desenharCartasBlue(self, vez):
         alturaTela = self.tela.get_height()
-
         posX = 50
-        posY = alturaTela//2 - 300 # Altura da linha de 3
+        posY = alturaTela // 2 - 300  # Altura da linha de 3
+
+        # Determina a imagem a ser usada com base na variável vez
+        if vez == 1:
+            cartas = [c.visual for c in self.p1.cartas_selecionadas]
+        else:
+            cartas = [self.imagemCartaViradaBlue] * self.p1.numCartas
 
         if self.p1.numCartas > 3:
             for i in range(3):
-                self.tela.blit(self.imagemCartaViradaBlue, (posX, posY))
+                self.tela.blit(cartas[i], (posX, posY))
                 posY += 200
 
             posX += 150
-            posY = alturaTela//2 - 200 # Altura da linha de 2
+            posY = alturaTela // 2 - 200  # Altura da linha de 2
 
             for j in range(self.p1.numCartas - 3):
-                self.tela.blit(self.imagemCartaViradaBlue, (posX, posY))
+                self.tela.blit(cartas[3 + j], (posX, posY))
                 posY += 200
         else:
             for i in range(self.p1.numCartas):
-                self.tela.blit(self.imagemCartaViradaBlue, (posX, posY))
+                self.tela.blit(cartas[i], (posX, posY))
                 posY += 200
 
-    def desenharCartasViradasRed(self):
+
+    def desenharCartasRed(self, vez):
         alturaTela = self.tela.get_height()
         larguraTela = self.tela.get_width()
 
-        posX = larguraTela//2 + 400
-        posY = alturaTela//2 - 200 #altura da linha de 2
+        posX = larguraTela // 2 + 400
+        posY = alturaTela // 2 - 200  # Altura da linha de 2
+
+        # Determina a imagem a ser usada com base na variável vez
+        if vez == 2:
+            cartas = [c.visual for c in self.p2.cartas_selecionadas]
+        else:
+            cartas = [self.imagemCartaViradaRed] * self.p2.numCartas
 
         if self.p2.numCartas > 3:
-            for _ in range(self.p2.numCartas - 3):
-                self.tela.blit(self.imagemCartaViradaRed, (posX, posY))
+            for i in range(self.p2.numCartas - 3):
+                self.tela.blit(cartas[i + 3], (posX, posY))
                 posY += 200
 
             posX += 150
-            posY = alturaTela//2 - 300 # Altura da linha de 3
+            posY = alturaTela // 2 - 300  # Altura da linha de 3
 
-            for _ in range(3):
-                self.tela.blit(self.imagemCartaViradaRed, (posX, posY))
+            for j in range(3):
+                self.tela.blit(cartas[j], (posX, posY))
                 posY += 200
- 
         else:
-            posX = larguraTela//2 + 550
-            posY = alturaTela//2 - 300
-            for _ in range(self.p2.numCartas):
-                self.tela.blit(self.imagemCartaViradaRed, (posX, posY))
+            posX = larguraTela // 2 + 550
+            posY = alturaTela // 2 - 300
+            for i in range(self.p2.numCartas):
+                self.tela.blit(cartas[i], (posX, posY))
                 posY += 200
 
     def getAdversario(self, p):

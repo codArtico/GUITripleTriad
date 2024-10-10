@@ -175,7 +175,7 @@ class Jogo:
             if not self.jogo_iniciado:
                 self.menu_inicial.desenharMenu()
             else:
-                self.board.desenharTabuleiro(self.bg)
+                self.board.desenharTabuleiro(self.bg,vez)
 
             # Condição de parada do jogo
             if self.board.cartasColocadas == 9:
