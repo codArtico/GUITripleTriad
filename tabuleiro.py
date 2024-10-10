@@ -128,49 +128,49 @@ class Tabuleiro:
         alturaTela = self.tela.get_height()
 
         posX = 50
-        posY = alturaTela//2 - 150
+        posY = alturaTela//2 - 300 # Altura da linha de 3
 
         if self.p1.numCartas > 3:
             for i in range(3):
                 self.tela.blit(self.imagemCartaViradaBlue, (posX, posY))
-                posY += 100
+                posY += 200
 
-            posX += 100
-            posY = alturaTela//2 - 100
+            posX += 150
+            posY = alturaTela//2 - 200 # Altura da linha de 2
 
             for j in range(self.p1.numCartas - 3):
                 self.tela.blit(self.imagemCartaViradaBlue, (posX, posY))
-                posY += 100
+                posY += 200
         else:
             for i in range(self.p1.numCartas):
                 self.tela.blit(self.imagemCartaViradaBlue, (posX, posY))
-                posY += 100
+                posY += 200
 
     def desenharCartasViradasRed(self):
         alturaTela = self.tela.get_height()
         larguraTela = self.tela.get_width()
 
-        posX = larguraTela//2 + 500
-        posY = alturaTela//2 - 100
+        posX = larguraTela//2 + 400
+        posY = alturaTela//2 - 200 #altura da linha de 2
 
         if self.p2.numCartas > 3:
             for _ in range(self.p2.numCartas - 3):
                 self.tela.blit(self.imagemCartaViradaRed, (posX, posY))
-                posY += 100
+                posY += 200
 
-            posX += 100
-            posY = alturaTela//2 - 150
+            posX += 150
+            posY = alturaTela//2 - 300 # Altura da linha de 3
 
             for _ in range(3):
                 self.tela.blit(self.imagemCartaViradaRed, (posX, posY))
-                posY += 100
+                posY += 200
  
         else:
-            posX = larguraTela//2 + 600
-            posY = alturaTela//2 - 150
+            posX = larguraTela//2 + 550
+            posY = alturaTela//2 - 300
             for _ in range(self.p2.numCartas):
                 self.tela.blit(self.imagemCartaViradaRed, (posX, posY))
-                posY += 100
+                posY += 200
 
     def getAdversario(self, p):
         return self.p1 if p == self.p2 else self.p2

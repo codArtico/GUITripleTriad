@@ -55,10 +55,10 @@ class Jogo:
         bSair = pygame.transform.smoothscale(bSair, (350, 85))
 
         cartaViradaBlue = pygame.image.load(os.path.join('imagens', 'versoCartaBlue.png'))
-        cartaViradaBlue= pygame.transform.smoothscale(cartaViradaBlue, (100, 100))
+        cartaViradaBlue= pygame.transform.smoothscale(cartaViradaBlue, (175,175))
 
         cartaViradaRed = pygame.image.load(os.path.join('imagens', 'versoCartaRed.png'))
-        cartaViradaRed = pygame.transform.smoothscale(cartaViradaRed, (100, 100))
+        cartaViradaRed = pygame.transform.smoothscale(cartaViradaRed, (175, 175))
 
 
         return bg, imagemSlot, imagemBorda, logo, botao, bIni, bSair, cartaViradaBlue, cartaViradaRed
