@@ -9,6 +9,7 @@ class Mesa:
         self.cartas_jogador2 = []
         self.players = [player1, player2]
         self.turno_atual = 0  # Índice para alternar entre os jogadores
+        pygame.font.init()  # Inicializa o módulo de fonte
 
     def desenhar_cartas_na_mesa(self, tela, bg):
         tela.blit(bg, (0, 0))
@@ -29,6 +30,21 @@ class Mesa:
             y = posicao_y_inicial + (i // 5) * altura_carta  # Posição y da carta
             tela.blit(carta.visual, (x, y))
 
+    def desenhar_turno(self, tela):
+        # Seleciona a fonte e tamanho
+        font = pygame.font.Font(None, 48)  # Fonte padrão com tamanho 36
+        jogador_atual = self.players[self.turno_atual]
+        
+        # Cria o texto do turno
+        texto_turno = f"Vez do Jogador {jogador_atual.numPlayer}"  # Altere conforme necessário
+        texto_renderizado = font.render(texto_turno, True, (255, 255, 255))  # Branco
+
+        # Desenha o texto na tela
+        largura_tela = tela.get_width()
+        altura_tela = tela.get_height()
+        posicao_texto = (largura_tela // 2 - texto_renderizado.get_width() // 2, altura_tela - 150)  # Centraliza horizontalmente na parte inferior
+        tela.blit(texto_renderizado, posicao_texto)
+
     def selecionar_carta(self, mouse_x, mouse_y):
         # Obtem a largura e altura da carta
         largura_carta = self.cartas_na_mesa[0].visual.get_width()
@@ -47,11 +63,13 @@ class Mesa:
 
     def distribuir_cartas(self, tela, bg):
         while len(self.cartas_na_mesa) > 0:
+            # Desenha as cartas e o turno atual
+            self.desenhar_cartas_na_mesa(tela, bg)
+            self.desenhar_turno(tela)
+            pygame.display.update()
+
             jogador_atual = self.players[self.turno_atual]
             print(f"Vez do jogador {jogador_atual.numPlayer} escolher uma carta.")
-            
-            self.desenhar_cartas_na_mesa(tela, bg)
-            pygame.display.update()
 
             carta_escolhida = None
             while carta_escolhida is None:
