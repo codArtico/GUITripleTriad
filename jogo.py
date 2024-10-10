@@ -1,4 +1,5 @@
 import pygame
+from random import randint
 from pygame.locals import *
 from sys import exit
 import os
@@ -100,6 +101,17 @@ class Jogo:
         self.mesa = Mesa(self.player1, self.player2)  # Cria uma nova mesa
         self.mesa.distribuir_cartas(self.tela)  # Distribui as cartas
 
+    def swap(self):
+        i = randint(0,4)
+        c1 = self.player1.cartas_selecionadas.pop(i)
+        c1.switchDono(self.player2)
+        i = randint(0,4)
+        c2 = self.player2.cartas_selecionadas.pop(i)
+        c2.switchDono(self.player1)
+        self.player1.cartas_selecionadas.append(c2)
+        self.player2.cartas_selecionadas.append(c1)
+
+
     def limparTela(self):
         self.tela.blit(self.bg,(0,0))
 
@@ -164,6 +176,7 @@ class Jogo:
                             self.sfxBotao.play()
                             self.mesa = Mesa(self.player1, self.player2)
                             self.mesa.distribuir_cartas(self.tela, self.bg, self.sfxCardPick)
+                            self.swap()
                             self.limparTela()
                             self.jogo_iniciado = True
                             
