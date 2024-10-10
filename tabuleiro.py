@@ -150,8 +150,8 @@ class Tabuleiro:
         alturaTela = self.tela.get_height()
         larguraTela = self.tela.get_width()
 
-        posX = larguraTela//2 + 400
-        posY = alturaTela//2 - 50
+        posX = larguraTela//2 + 500
+        posY = alturaTela//2 - 100
 
         if self.p2.numCartas > 3:
             for _ in range(self.p2.numCartas - 3):
@@ -159,15 +159,15 @@ class Tabuleiro:
                 posY += 100
 
             posX += 100
-            posY = alturaTela//2 - 100
+            posY = alturaTela//2 - 150
 
             for _ in range(3):
                 self.tela.blit(self.imagemCartaViradaRed, (posX, posY))
                 posY += 100
  
         else:
-            posX = larguraTela//2 + 500
-            posY = alturaTela//2 - 100
+            posX = larguraTela//2 + 600
+            posY = alturaTela//2 - 150
             for _ in range(self.p2.numCartas):
                 self.tela.blit(self.imagemCartaViradaRed, (posX, posY))
                 posY += 100
