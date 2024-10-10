@@ -4,6 +4,7 @@ class Player:
         self.numPlayer = nump
         self.deck = []
         self.cartas_selecionadas = []  # Atributo para armazenar cartas selecionadas
+        self.numCartas = 5
 
     def downPoint(self):
         self.pontos -= 1

@@ -22,13 +22,14 @@ class Jogo:
         self.jogo_iniciado = False
         pygame.display.set_caption("Triple Triad")
 
-        self.bg, self.imagemSlot, self.imagemBorda, self.logo, self.botao, self.bIni, self.bSair = self.carregarImagens()
+        self.bg, self.imagemSlot, self.imagemBorda, self.logo, self.botao, self.bIni, self.bSair, self.cartaViradaBlue,self.cartaViradaRed = self.carregarImagens()
+
         self.sfxCaptura, self.sfxColocarCarta, self.sfxPlus, self.sfxVitoria, self.sfxBotao, self.sfxEmpate, self.sfxWinP1, self.sfxWinP2, self.sfxCardPick = self.carregarSfxs()
 
         self.player1 = Player(1)
         self.player2 = Player(2)
 
-        self.board = Tabuleiro(self.tela, self.imagemSlot, self.imagemBorda, self.largura, self.altura, self.player1, self.player2)
+        self.board = Tabuleiro(self.tela, self.imagemSlot, self.imagemBorda, self.largura, self.altura, self.player1, self.player2, self.cartaViradaBlue, self.cartaViradaRed)
         self.menu_inicial = Menu(self.tela, self.bg, self.logo, self.botao, self.bIni, self.bSair)
         self.distribuindo = False
 
@@ -53,7 +54,14 @@ class Jogo:
         bSair = pygame.image.load(os.path.join('imagens', 'sair.png'))
         bSair = pygame.transform.smoothscale(bSair, (350, 85))
 
-        return bg, imagemSlot, imagemBorda, logo, botao, bIni, bSair
+        cartaViradaBlue = pygame.image.load(os.path.join('imagens', 'versoCartaBlue.png'))
+        cartaViradaBlue= pygame.transform.smoothscale(cartaViradaBlue, (100, 100))
+
+        cartaViradaRed = pygame.image.load(os.path.join('imagens', 'versoCartaRed.png'))
+        cartaViradaRed = pygame.transform.smoothscale(cartaViradaRed, (100, 100))
+
+
+        return bg, imagemSlot, imagemBorda, logo, botao, bIni, bSair, cartaViradaBlue, cartaViradaRed
 
     def carregarSfxs(self):
         sfxCaptura = pygame.mixer.Sound(os.path.join('audios','capture.mp3'))
@@ -113,7 +121,7 @@ class Jogo:
                     pygame.quit()
                     exit()
 
-                if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     mouse_x, mouse_y = pygame.mouse.get_pos()
 
                     if not self.jogo_iniciado and not self.distribuindo:
@@ -144,11 +152,11 @@ class Jogo:
                                     if self.board.slots[linha][coluna] is None:
                                         if vez == 1:
                                             carta = self.player1.cartas_selecionadas.pop(0)  # Retira a carta do jogador
-                                            self.board.colocarCarta(carta, linha, coluna)
+                                            self.board.colocarCarta(carta, linha, coluna, vez)
                                             vez = 2
                                         else:
                                             carta = self.player2.cartas_selecionadas.pop(0)  # Retira a carta do jogador
-                                            self.board.colocarCarta(carta, linha, coluna)
+                                            self.board.colocarCarta(carta, linha, coluna, vez)
                                             vez = 1
                                         
                                         captura,plus = self.board.verificarVizinhas(linha, coluna, carta)
@@ -167,7 +175,7 @@ class Jogo:
             if not self.jogo_iniciado:
                 self.menu_inicial.desenharMenu()
             else:
-                self.board.desenharTabuleiro()
+                self.board.desenharTabuleiro(self.bg)
 
             # Condição de parada do jogo
             if self.board.cartasColocadas == 9:
@@ -183,7 +191,7 @@ class Jogo:
                 self.jogo_iniciado = False
                 self.player1 = Player(1)
                 self.player2 = Player(2)
-                self.board = Tabuleiro(self.tela, self.imagemSlot, self.imagemBorda, self.largura, self.altura, self.player1, self.player2)
+                self.board = Tabuleiro(self.tela, self.imagemSlot, self.imagemBorda, self.largura, self.altura, self.player1, self.player2, self.cartaViradaBlue, self.cartaViradaRed)
 
             pygame.display.update()
 
