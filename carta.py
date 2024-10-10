@@ -29,9 +29,18 @@ class Carta:
                 }
                 return valores
 
+    def cartaForcada(self):
+        valores = {}
+        valores['cima'] = 4
+        valores['direita'] = 4
+        valores['baixo'] = 4
+        valores['esquerda'] = 4
+        return valores
+        
+
     def __init__(self,player):
         self.cor = None
-        self.valores = self.gerarValor()
+        self.valores = self.cartaForcada()
         self.dono = player
         pygame.font.init()
         self.fonte = pygame.font.Font(None, 30)
