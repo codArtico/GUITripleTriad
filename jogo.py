@@ -1,4 +1,5 @@
 import pygame
+import time
 from random import randint
 from pygame.locals import *
 from sys import exit
@@ -23,7 +24,12 @@ class Jogo:
         self.jogo_iniciado = False
         pygame.display.set_caption("Triple Triad")
 
-        self.bg, self.imagemSlot, self.imagemBorda, self.logo, self.botao, self.bIni, self.bSair, self.cartaViradaBlue,self.cartaViradaRed = self.carregarImagens()
+        self.bg, self.imagemSlot, self.imagemBorda, self.logo, self.botao, self.bIni, self.bSair, self.cartaViradaBlue,self.cartaViradaRed, self.imgPlus = self.carregarImagens()
+
+        self.posicao_animacao_x = -self.imgPlus.get_width()  # Começa fora da tela à esquerda
+        self.posicao_animacao_y = (self.altura - self.imgPlus.get_height()) // 2  # Centralizado verticalmente
+        self.velocidade_animacao = 30
+        self.trava = True
 
         self.sfxCaptura, self.sfxColocarCarta, self.sfxPlus, self.sfxVitoria, self.sfxBotao, self.sfxEmpate, self.sfxWinP1, self.sfxWinP2, self.sfxCardPick = self.carregarSfxs()
 
@@ -33,10 +39,10 @@ class Jogo:
         self.board = Tabuleiro(self.tela, self.imagemSlot, self.imagemBorda, self.largura, self.altura, self.player1, self.player2, self.cartaViradaBlue, self.cartaViradaRed)
         self.menu_inicial = Menu(self.tela, self.bg, self.logo, self.botao, self.bIni, self.bSair)
         self.distribuindo = False
+        self.animacaoPlusAtiva = False
 
         pygame.mixer.music.load(os.path.join('audios', 'theme.mp3'))
         pygame.mixer.music.play(-1)
-
 
     def carregarImagens(self):
         icon = pygame.image.load(os.path.join('imagens', 'icon.ico'))
@@ -61,8 +67,10 @@ class Jogo:
         cartaViradaRed = pygame.image.load(os.path.join('imagens', 'versoCartaRed.png'))
         cartaViradaRed = pygame.transform.smoothscale(cartaViradaRed, (175, 175))
 
+        imgPlus = pygame.image.load(os.path.join('imagens', 'imgPlus.png'))
+        imgPlus= pygame.transform.smoothscale(imgPlus, (800, 800))
 
-        return bg, imagemSlot, imagemBorda, logo, botao, bIni, bSair, cartaViradaBlue, cartaViradaRed
+        return bg, imagemSlot, imagemBorda, logo, botao, bIni, bSair, cartaViradaBlue, cartaViradaRed, imgPlus
 
     def carregarSfxs(self):
         sfxCaptura = pygame.mixer.Sound(os.path.join('audios','capture.mp3'))
@@ -111,9 +119,25 @@ class Jogo:
         self.player1.cartas_selecionadas.append(c2)
         self.player2.cartas_selecionadas.append(c1)
 
+    def animarImagem(self):
+        self.posicao_animacao_x += self.velocidade_animacao
 
-    def limparTela(self):
-        self.tela.blit(self.bg,(0,0))
+        if self.posicao_animacao_x >= self.tela.get_width() / 2 - 350 and self.animacaoPlusAtiva and self.trava:
+            time.sleep(2)
+            self.trava=False
+
+        # Verifica se a imagem saiu da tela
+        if self.posicao_animacao_x > self.largura:
+            self.animacaoPlusAtiva = False # Reinicia a animação
+            self.posicao_animacao_x = -self.imgPlus.get_width()
+            self.trava = True
+
+
+    def renderizar(self, img):
+        self.limparTela()
+        self.animarImagem()  # Atualiza a posição da imagem
+        self.tela.blit(img, (self.posicao_animacao_x, self.posicao_animacao_y))  # Desenha a imagem na tela
+        pygame.display.flip()  # Atualiza a tela
 
     def processarEventoClique(self, posicao_mouse, vez):
         print("Iniciou processamento de clique")
@@ -155,6 +179,9 @@ class Jogo:
             return 2
         else:
             return None
+
+    def limparTela(self): 
+        self.tela.blit(self.bg, (0, 0))
 
     def run(self):
         vez = 1  # 1 para jogador 1, 2 para jogador 2
@@ -202,6 +229,7 @@ class Jogo:
                                             if captura:
                                                 if plus:
                                                     self.sfxPlus.play()
+                                                    self.animacaoPlusAtiva = True
                                                 else:
                                                     self.sfxCaptura.play()
                                             if vez == 1:
@@ -216,7 +244,7 @@ class Jogo:
                                             print(f'Pontuação p2: {self.player2.pontos}')
                                             break  # Sai do loop após colocar a carta
                                         else:
-                                            print("Slot já ocupado, escolha outro.")
+                                            print("Slot já ocupado, escolha outro.")                   
                         else:
                             # Verifica se uma carta foi clicada
                             indice_carta_selecionada = self.processarEventoClique((mouse_x, mouse_y), vez)
@@ -247,6 +275,10 @@ class Jogo:
                     self.player1 = Player(1)
                     self.player2 = Player(2)
                     self.board = Tabuleiro(self.tela, self.imagemSlot, self.imagemBorda, self.largura, self.altura, self.player1, self.player2, self.cartaViradaBlue, self.cartaViradaRed)
+            
+            if self.animacaoPlusAtiva:
+                    self.animarImagem()  # Atualiza a posição da animação
+                    self.renderizar(self.imgPlus)
 
             pygame.display.update()
 
