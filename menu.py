@@ -1,4 +1,4 @@
-import pygame
+from configs import *
 
 class Menu:
     def __init__(self, tela, bg, logo, botao, bIni, bSair):
@@ -37,7 +37,8 @@ class Menu:
         return area_iniciar, area_sair
 
     # Função para verificar se o mouse está sobre um botão
-    def is_hover(self, mouse_x, mouse_y, rect):
+    @staticmethod
+    def is_hover(mouse_x, mouse_y, rect):
         return rect[0] <= mouse_x <= rect[0] + rect[2] and rect[1] <= mouse_y <= rect[1] + rect[3]
 
     # Função para verificar clique no botão
