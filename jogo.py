@@ -57,6 +57,7 @@ class Jogo:
         self.posicao_animacao_y = (largura_tela - self.imgPlus.get_height()) // 2  # Centralizado verticalmente
         self.velocidade_animacao = 30
         self.trava = True
+        self.select = False
 
         self.sfxCaptura, self.sfxColocarCarta, self.sfxPlus, self.sfxVitoria, self.sfxBotao, self.sfxEmpate, self.sfxWinP1, self.sfxWinP2, self.sfxCardPick = carregarSfxs()
 
@@ -81,7 +82,13 @@ class Jogo:
             return 2
         else:
             return None
-
+        
+    @staticmethod
+    def switchTurno(turno):
+        if turno == 1:
+            return 2
+        else:
+            return 1
 
     def swap(self):
         i = randint(0,4)
@@ -120,6 +127,7 @@ class Jogo:
 
         for carta in cartas:
             if carta.rect.collidepoint(posicao_mouse):
+                print(f'Carta selecionada')
                 return carta  # Retorna a carta clicada
 
         return None
@@ -159,33 +167,46 @@ class Jogo:
                             pygame.quit()
                             exit()
                     else:
-                        carta_selecionada = self.processarEventoClique((mouse_x, mouse_y), turno)
-                        if carta_selecionada:
-                            for (linha, coluna), slot in self.board.slots.items():
-                                print(f"Checking slot at ({linha}, {coluna}) with rect: {slot['rect']}")
-                                if slot['rect'].collidepoint(mouse_x, mouse_y):
-                                    print(f"Slot at ({linha}, {coluna}) was clicked.")
-                                    if self.board.slots[(linha, coluna)]['carta'] is None:  # Check if the slot is empty
-                                        self.board.colocarCarta(carta_selecionada, linha, coluna, turno)
-                                        captura, plus = self.board.verificarVizinhas(linha, coluna, carta_selecionada)
-                                        if captura:
-                                            if plus:
-                                                self.sfxPlus.play()
-                                                self.animacaoPlusAtiva = True
-                                            else:
-                                                self.sfxCaptura.play()
+                        if not self.select:
+                            carta_selecionada = self.processarEventoClique((mouse_x, mouse_y), turno)
+                            if carta_selecionada:
+                                self.select = True
+                                print("Select recebeu true")
+                        else:
+                            if carta_selecionada:
+                                for (linha, coluna), slot in self.board.slots.items():
+                                    print(f"Checking slot at ({linha}, {coluna}) with rect: {slot['rect']}")
+                                    if slot['rect'].collidepoint(mouse_x,mouse_y):
+                                        print(f"Slot at ({linha}, {coluna}) was clicked.")
+                                        if self.board.slots[(linha, coluna)]['carta'] is None:  # Check if the slot is empty
+                                            self.board.colocarCarta(carta_selecionada, linha, coluna, turno)
+                                            self.select = False
+                                            captura, plus = self.board.verificarVizinhas(linha, coluna, carta_selecionada)
+                                            if captura:
+                                                if plus:
+                                                    self.sfxPlus.play()
+                                                    self.animacaoPlusAtiva = True
+                                                else:
+                                                    self.sfxCaptura.play()
                                             if turno == 1:
-                                                self.player1.cartas_selecionadas.remove(
-                                                    carta_selecionada)  # Remove the card from player 1
-                                                turno = 2  # Switch to player 2
+                                                if carta_selecionada in self.player1.cartas_selecionadas:
+                                                    self.player1.cartas_selecionadas.remove(carta_selecionada)  # Remove a carta do jogador 1
+                                                else:
+                                                    print("Erro: Carta selecionada não está na lista de cartas_selecionadas do jogador 1")
                                             else:
-                                                self.player2.cartas_selecionadas.remove(
-                                                    carta_selecionada)  # Remove the card from player 2
-                                                turno = 1  # Switch to player 1
+                                                if carta_selecionada in self.player2.cartas_selecionadas:
+                                                    self.player2.cartas_selecionadas.remove(carta_selecionada)  # Remove a carta do jogador 2
+                                                else:
+                                                    print("Erro: Carta selecionada não está na lista de cartas_selecionadas do jogador 2")
 
                                             carta_selecionada = None  # Reset the selected card
+                                            turno = self.switchTurno(turno)
                                             break  # Exit the loop after placing the card
-
+                                                
+                                    else:
+                                        print("Problema na seleção de slot")            
+                            else:
+                                print("Problema na seleção da carta")                        
             if not self.jogo_iniciado:
                 self.menu_inicial.desenharMenu()
             else:
@@ -201,7 +222,7 @@ class Jogo:
                 else:
                     self.sfxEmpate.play()
 
-                # Restart the game
+                #Restart the game
                 self.jogo_iniciado = False
                 self.player1 = Player(1)
                 self.player2 = Player(2)

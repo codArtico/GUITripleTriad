@@ -17,10 +17,10 @@ def gerarValor():
         if 14 <= sum(v for v in valores) <= 30:
             vetor = ["A" if v == 10 else v for v in valores]
             valores = {
-                'cima': vetor[0],
-                'direita': vetor[1],
-                'baixo': vetor[2],
-                'esquerda': vetor[3]
+                'up': vetor[0],
+                'right': vetor[1],
+                'down': vetor[2],
+                'left': vetor[3]
             }
             return valores
 
@@ -51,7 +51,7 @@ class Carta:
             desenho.fill((0, 0, 0))  # Preenche com preto para indicar erro
 
         for pos, direcao in zip([(largura // 2, 40), (largura - 55, altura // 2), (largura // 2, altura - 40),
-                                 (55, altura // 2)], ['cima', 'direita', 'baixo', 'esquerda']):
+                                 (55, altura // 2)], ['up', 'right', 'down', 'left']):
             texto = self.fonte.render(str(self.valores[direcao]), True, (255, 255, 255))
             desenho.blit(texto, (pos[0] - texto.get_width() // 2, pos[1] - texto.get_height() // 2))
 
