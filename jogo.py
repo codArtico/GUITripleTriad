@@ -226,9 +226,13 @@ class Jogo:
                 self.jogo_iniciado = False
                 self.player1 = Player(1)
                 self.player2 = Player(2)
-                self.board = Tabuleiro(self.tela_principal, self.imagemSlot, self.imagemBorda, largura_tela,
-                                       altura_tela, self.player1, self.player2, self.cartaViradaBlue,
-                                       self.cartaViradaRed)
+                # Reinicie o tamanho da tela para os valores originais
+                self.tela_principal = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA), pygame.RESIZABLE)
+                
+                # Recrie o tabuleiro com as dimensões originais
+                self.board = Tabuleiro(self.tela_principal, self.imagemSlot, self.imagemBorda, LARGURA_TELA,
+                                    ALTURA_TELA, self.player1, self.player2, self.cartaViradaBlue,
+                                    self.cartaViradaRed)
 
             if self.animacaoPlusAtiva:
                 self.animar_imagem(LARGURA_TELA)

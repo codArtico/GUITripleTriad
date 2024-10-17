@@ -38,7 +38,6 @@ class Tabuleiro:
                 rect = pygame.Rect(self.offset_x + coluna * self.largura_slot,
                                    self.offset_y + linha * self.altura_slot,
                                    self.largura_slot, self.altura_slot)
-                pygame.draw.rect(tela,'blue',rect)
                 self.slots[(linha, coluna)] = {'rect': rect, 'carta': None}
                 print(f'Slot criado em: {self.slots[(linha,coluna)]['rect']}')
         self.cartasColocadas = 0
