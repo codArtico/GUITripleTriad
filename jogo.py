@@ -1,4 +1,11 @@
 from configs import *
+from tabuleiro import *
+from player import *
+from menu import *
+from carta import *
+from mesa import *
+from random import randint
+import time
 
 def carregarImagens():
     icon = pygame.image.load(os.path.join('imagens', 'icon.ico'))
@@ -44,27 +51,27 @@ def carregarSfxs():
 
 # Classe Game para gerenciar o fluxo do jogo
 class Jogo:
-    def __init__(self, largura_tela, altura_tela):
+    def __init__(self, larguraTela, alturaTela):
         pygame.init()
-        self.tela_principal = pygame.display.set_mode((largura_tela, altura_tela), pygame.FULLSCREEN)
+        self.telaPrincipal = pygame.display.set_mode((larguraTela, alturaTela), pygame.FULLSCREEN)
         pygame.display.set_caption("Triple Triad")
         self.fps = pygame.time.Clock()
         self.running = True
-        self.jogo_iniciado = False
+        self.jogoIniciado = False
 
         self.bg, self.imagemSlot, self.imagemBorda, self.logo, self.botao, self.bIni, self.bSair, self.cartaViradaBlue,self.cartaViradaRed, self.imgPlus = carregarImagens()
 
         
         # Dimensões da imagem de fundo
-        self.bg_largura, self.bg_altura = self.bg.get_size()
+        self.bgLargura, self.bgAltura = self.bg.get_size()
 
             # Calcular a posição para centralizar a imagem de fundo
-        self.bg_pos_x = (LARGURA_TELA - self.bg_largura) // 2
-        self.bg_pos_y = (ALTURA_TELA - self.bg_altura) // 2
+        self.bgX = (larguraTela - self.bgLargura) // 2
+        self.bgY = (alturaTela - self.bgAltura) // 2
 
-        self.posicao_animacao_x = -self.imgPlus.get_width()  # Começa fora da tela à esquerda
-        self.posicao_animacao_y = (altura_tela - self.imgPlus.get_height()) // 2  # Centralizado verticalmente
-        self.velocidade_animacao = 30
+        self.animacaoX = -self.imgPlus.get_width()  # Começa fora da tela à esquerda
+        self.animacaoY = (alturaTela - self.imgPlus.get_height()) // 2  # Centralizado verticalmente
+        self.velAnimacao = 30
         self.trava = True
         self.select = False
 
@@ -73,8 +80,8 @@ class Jogo:
         self.player1 = Player(1)
         self.player2 = Player(2)
 
-        self.board = Tabuleiro(self.tela_principal, self.imagemSlot, self.imagemBorda, largura_tela, altura_tela, self.player1, self.player2, self.cartaViradaBlue, self.cartaViradaRed)
-        self.menu_inicial = Menu(self.tela_principal, self.bg, self.logo, self.botao, self.bIni, self.bSair)
+        self.board = Tabuleiro(self.telaPrincipal, self.imagemSlot, self.imagemBorda, larguraTela, alturaTela, self.player1, self.player2, self.cartaViradaBlue, self.cartaViradaRed)
+        self.menuInicial = Menu(self.telaPrincipal, self.bg, self.logo, self.botao, self.bIni, self.bSair)
         self.distribuindo = False
         self.animacaoPlusAtiva = False
 
@@ -101,43 +108,43 @@ class Jogo:
 
     def swap(self):
         i = randint(0,4)
-        c1 = self.player1.cartas_selecionadas.pop(i)
+        c1 = self.player1.cartasSelecionadas.pop(i)
         c1.switchDono(self.player2)
         i = randint(0,4)
-        c2 = self.player2.cartas_selecionadas.pop(i)
+        c2 = self.player2.cartasSelecionadas.pop(i)
         c2.switchDono(self.player1)
-        self.player1.cartas_selecionadas.append(c2)
-        self.player2.cartas_selecionadas.append(c1)
+        self.player1.cartasSelecionadas.append(c2)
+        self.player2.cartasSelecionadas.append(c1)
 
 
-    def animar_imagem(self, largura_tela):
-        self.posicao_animacao_x += self.velocidade_animacao
+    def animarImagem(self, larguraTela):
+        self.animacaoX += self.velAnimacao
 
-        if self.posicao_animacao_x >= self.tela_principal.get_width() / 2 - 350 and self.animacaoPlusAtiva and self.trava:
+        if self.animacaoX >= self.telaPrincipal.get_width() / 2 - 350 and self.animacaoPlusAtiva and self.trava:
             time.sleep(1)
             self.trava=False
 
         # Verifica se a imagem saiu da tela
-        if self.posicao_animacao_x > largura_tela:
+        if self.animacaoX > larguraTela:
             self.animacaoPlusAtiva = False # Reinicia a animação
-            self.posicao_animacao_x = -self.imgPlus.get_width()
+            self.animacaoX = -self.imgPlus.get_width()
             self.trava = True
 
     def renderizar(self, img):
-        superficie_temporaria = pygame.Surface(self.tela_principal.get_size())
-        superficie_temporaria.blit(self.tela_principal, (0, 0))
-        self.animar_imagem(self.tela_principal.get_width())
-        superficie_temporaria.blit(img, (self.posicao_animacao_x, self.posicao_animacao_y))
-        self.tela_principal.blit(superficie_temporaria, (0, 0))
+        tempSurface = pygame.Surface(self.telaPrincipal.get_size())
+        tempSurface.blit(self.telaPrincipal, (0, 0))
+        self.animarImagem(self.telaPrincipal.get_width())
+        tempSurface.blit(img, (self.animacaoX, self.animacaoY))
+        self.telaPrincipal.blit(tempSurface, (0, 0))
         pygame.display.flip()
 
-    def processarEventoClique(self, posicao_mouse, vez):
-        cartas = self.player1.cartas_selecionadas if vez == 1 else self.player2.cartas_selecionadas
+    def processarEventoClique(self, posMouse, vez):
+        cartas = self.player1.cartasSelecionadas if vez == 1 else self.player2.cartasSelecionadas
 
         for carta in cartas:
-            pygame.draw.rect(self.tela_principal, (255, 0, 0), carta.rect, 2)
+            pygame.draw.rect(self.telaPrincipal, (255, 0, 0), carta.rect, 2)
             pygame.display.flip()
-            if carta.rect.collidepoint(posicao_mouse):
+            if carta.rect.collidepoint(posMouse):
                 print(f'Carta selecionada')
                 return carta  # Retorna a carta clicada
 
@@ -145,7 +152,7 @@ class Jogo:
 
     def run(self):
         turno = 1  # 1 for player 1, 2 for player 2
-        carta_selecionada = None
+        cartaSelecionada = None
 
         while self.running:
             self.fps.tick(30)
@@ -157,40 +164,40 @@ class Jogo:
 
 
                 # if event.type == pygame.VIDEORESIZE:
-                #     self.tela_principal = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
+                #     self.telaPrincipal = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
 
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                    mouse_x, mouse_y = pygame.mouse.get_pos()
-                    print(f"Mouse clicked at: ({mouse_x}, {mouse_y})")
+                    mouseX, mouseY = pygame.mouse.get_pos()
+                    print(f"Mouse clicked at: ({mouseX}, {mouseY})")
 
-                    if not self.jogo_iniciado and not self.distribuindo:
-                        botao_iniciar, botao_sair_menu = self.menu_inicial.desenharMenu()
-                        if self.menu_inicial.click_botao(botao_iniciar, mouse_x, mouse_y):
+                    if not self.jogoIniciado and not self.distribuindo:
+                        bIniciar, bSair = self.menuInicial.desenharMenu()
+                        if self.menuInicial.clickBotao(bIniciar, mouseX, mouseY):
                             self.sfxBotao.play()
                             self.mesa = Mesa(self.player1, self.player2)
-                            self.mesa.distribuir_cartas(self.tela_principal, self.bg,self.bg_pos_x,self.bg_pos_y, self.sfxCardPick)
+                            self.mesa.distribuirCartas(self.telaPrincipal, self.bg,self.bgX,self.bgY, self.sfxCardPick)
                             self.swap()
-                            self.jogo_iniciado = True
+                            self.jogoIniciado = True
 
-                        elif self.menu_inicial.click_botao(botao_sair_menu, mouse_x, mouse_y):
+                        elif self.menuInicial.clickBotao(bSair, mouseX, mouseY):
                             pygame.quit()
                             exit()
                     else:
                         if not self.select:
-                            carta_selecionada = self.processarEventoClique((mouse_x, mouse_y), turno)
-                            if carta_selecionada:
+                            cartaSelecionada = self.processarEventoClique((mouseX, mouseY), turno)
+                            if cartaSelecionada:
                                 self.select = True
                                 print("Select recebeu true")
                         else:
-                            if carta_selecionada:
+                            if cartaSelecionada:
                                 for (linha, coluna), slot in self.board.slots.items():
                                     print(f"Checking slot at ({linha}, {coluna}) with rect: {slot['rect']}")
-                                    if slot['rect'].collidepoint(mouse_x,mouse_y):
+                                    if slot['rect'].collidepoint(mouseX,mouseY):
                                         print(f"Slot at ({linha}, {coluna}) was clicked.")
                                         if self.board.slots[(linha, coluna)]['carta'] is None:  # Check if the slot is empty
-                                            self.board.colocarCarta(carta_selecionada, linha, coluna, turno)
+                                            self.board.colocarCarta(cartaSelecionada, linha, coluna, turno)
                                             self.select = False
-                                            captura, plus = self.board.verificarVizinhas(linha, coluna, carta_selecionada)
+                                            captura, plus = self.board.verificarVizinhas(linha, coluna, cartaSelecionada)
                                             if captura:
                                                 if plus:
                                                     self.sfxPlus.play()
@@ -204,7 +211,7 @@ class Jogo:
                                             else:
                                                 self.player2.numCartas -= 1
 
-                                            carta_selecionada = None  # Reset the selected card
+                                            cartaSelecionada = None  # Reset the selected card
                                             turno = self.switchTurno(turno)
                                             break  # Exit the loop after placing the card
                                                 
@@ -212,10 +219,10 @@ class Jogo:
                                         print("Problema na seleção de slot")            
                             else:
                                 print("Problema na seleção da carta")                        
-            if not self.jogo_iniciado:
-                self.menu_inicial.desenharMenu()
+            if not self.jogoIniciado:
+                self.menuInicial.desenharMenu()
             else:
-                self.board.desenharTabuleiro(self.bg, turno, self.bg_pos_x, self.bg_pos_y)
+                self.board.desenharTabuleiro(self.bg, turno, self.bgX, self.bgY)
 
             # Game end condition
             if self.board.cartasColocadas == 9:
@@ -228,17 +235,17 @@ class Jogo:
                     self.sfxEmpate.play()
 
                 #Restart the game
-                self.jogo_iniciado = False
+                self.jogoIniciado = False
                 self.player1 = Player(1)
                 self.player2 = Player(2)
                 
                 # Recrie o tabuleiro com as dimensões originais
-                self.board = Tabuleiro(self.tela_principal, self.imagemSlot, self.imagemBorda, LARGURA_TELA,
+                self.board = Tabuleiro(self.telaPrincipal, self.imagemSlot, self.imagemBorda, LARGURA_TELA,
                                     ALTURA_TELA, self.player1, self.player2, self.cartaViradaBlue,
                                     self.cartaViradaRed)
 
             if self.animacaoPlusAtiva:
-                self.animar_imagem(LARGURA_TELA)
+                self.animarImagem(LARGURA_TELA)
                 self.renderizar(self.imgPlus)
 
             pygame.display.update()

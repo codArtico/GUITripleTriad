@@ -1,4 +1,6 @@
 from configs import *
+from os.path import join
+from random import randint
 
 def gerarValor():
     while True:
@@ -33,19 +35,19 @@ def cartaForcada():
         return valores
 
 class Carta:
-    def __init__(self, player, proporcao_posicao=(0.5, 0.5)):
+    def __init__(self, player, posicaoProp=(0.5, 0.5)):
         self.fonte = pygame.font.Font(None, 30)
         self.dono = player
         self.valores = cartaForcada()
-        self.visual = self.desenhar_carta()
+        self.visual = self.desenharCarta()
 
         # Calcula a posição inicial baseada em valores relativos à tela
-        x = 1366 * proporcao_posicao[0]
-        y = 768 * proporcao_posicao[1]
+        x = 1366 * posicaoProp[0]
+        y = 768 * posicaoProp[1]
 
         self.rect = self.visual.get_rect()  # Define o rect de forma relativa
 
-    def desenhar_carta(self):
+    def desenharCarta(self):
         largura, altura = 200, 200
         desenho = None
         try:
@@ -60,11 +62,11 @@ class Carta:
             desenho = pygame.Surface((largura, altura))
             desenho.fill((0, 0, 0))  # Preenche com preto para indicar erro
 
-        self._renderizar_valores(desenho, largura, altura)
+        self.renderValores(desenho, largura, altura)
         
         return desenho
 
-    def _renderizar_valores(self, desenho, largura, altura):
+    def renderValores(self, desenho, largura, altura):
         for pos, direcao in zip([(largura // 2, 40), (largura - 55, altura // 2), (largura // 2, altura - 40),
                                  (55, altura // 2)], ['up', 'right', 'down', 'left']):
             texto = self.fonte.render(str(self.valores[direcao]), True, (255, 255, 255))
@@ -79,5 +81,5 @@ class Carta:
 
     def switchDono(self, p):
         self.dono = p
-        self.visual = self.desenhar_carta()
+        self.visual = self.desenharCarta()
         self.rect = self.visual.get_rect(center=self.rect.center)  # Atualiza o rect com a nova imagem

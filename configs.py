@@ -1,15 +1,5 @@
 import pygame
-import time
 import os
-from os.path import join
-from random import randint
-from carta import Carta
-from random import randint
-from sys import exit
-from tabuleiro import Tabuleiro
-from menu import Menu
-from player import Player
-from mesa import Mesa
 
 
 pygame.font.init()
