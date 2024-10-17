@@ -63,7 +63,7 @@ class Jogo:
         self.bg_pos_y = (ALTURA_TELA - self.bg_altura) // 2
 
         self.posicao_animacao_x = -self.imgPlus.get_width()  # Começa fora da tela à esquerda
-        self.posicao_animacao_y = (largura_tela - self.imgPlus.get_height()) // 2  # Centralizado verticalmente
+        self.posicao_animacao_y = (altura_tela - self.imgPlus.get_height()) // 2  # Centralizado verticalmente
         self.velocidade_animacao = 30
         self.trava = True
         self.select = False

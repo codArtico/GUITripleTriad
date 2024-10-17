@@ -24,11 +24,19 @@ def gerarValor():
             }
             return valores
 
+def cartaForcada():
+        valores = {}
+        valores['up'] = 4
+        valores['right'] = 4
+        valores['down'] = 4
+        valores['left'] = 4
+        return valores
+
 class Carta:
     def __init__(self, player, proporcao_posicao=(0.5, 0.5)):
         self.fonte = pygame.font.Font(None, 30)
         self.dono = player
-        self.valores = gerarValor()
+        self.valores = cartaForcada()
         self.visual = self.desenhar_carta()
 
         # Calcula a posição inicial baseada em valores relativos à tela
