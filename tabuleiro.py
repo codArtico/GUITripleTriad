@@ -66,25 +66,34 @@ class Tabuleiro:
             pos_x = self.offset_x + coluna * self.largura_slot
             pos_y = self.offset_y + linha * self.altura_slot
             slot['rect'].topleft = (pos_x, pos_y)
-            slot = pygame.transform.scale(self.imagemSlot, (self.largura_slot, self.altura_slot))
+
+            slot_imagem = pygame.transform.scale(self.imagemSlot, (self.largura_slot, self.altura_slot))
             borda = pygame.transform.scale(self.imagemBorda, (
-            self.largura_slot + 2 * self.tamanhoBorda, self.altura_slot + 2 * self.tamanhoBorda))
+                self.largura_slot + 2 * self.tamanhoBorda, self.altura_slot + 2 * self.tamanhoBorda))
+
             self.tela.blit(borda, (pos_x - self.tamanhoBorda, pos_y - self.tamanhoBorda))
-            self.tela.blit(slot, self.slots[(linha, coluna)]['rect'].topleft)
+            self.tela.blit(slot_imagem, slot['rect'].topleft)
 
             # Desenha a carta se existir
-            if self.slots[(linha, coluna)]['carta'] is not None:
-                carta = self.slots[(linha, coluna)]['carta']
-                self.tela.blit(carta.visual, carta.rect)
+            if slot['carta'] is not None:
+                carta = slot['carta']
+                carta.visual = pygame.transform.smoothscale(carta.visual, (175, 175))  # Redimensiona a imagem da carta
+                carta.rect = pygame.Rect(pos_x + (self.largura_slot - 175) // 2, 
+                                        pos_y + (self.altura_slot - 175) // 2, 175, 175)  # Centraliza o rect da carta
+                self.tela.blit(carta.visual, carta.rect.topleft)  # Alinha a imagem com o rect da carta
 
     def colocarCarta(self, carta, linha, coluna, turno):
-        # Verifica se o slot está vazio antes de colocar a carta
+    # Verifica se o slot está vazio antes de colocar a carta
         if self.slots[(linha, coluna)]['carta'] is None:
+            # Define o tamanho do rect da carta para 175x175
+            carta.rect = pygame.Rect(0, 0, 175, 175)  # Altere para 175x175
+            carta.rect.center = self.slots[(linha, coluna)]['rect'].center  # Centraliza o rect da carta
+            
             self.slots[(linha, coluna)]['carta'] = carta
             carta.dono = self.p1 if turno == 1 else self.p2
-            carta.rect.center = self.slots[(linha, coluna)]['rect'].center
             print(f"Carta colocada em: linha {linha}, coluna {coluna}")
             self.cartasColocadas += 1
+            
             # Remove a carta da mão do jogador atual
             if turno == 1:
                 self.p1.cartas_selecionadas.remove(carta)
@@ -94,8 +103,6 @@ class Tabuleiro:
         else:
             print("O slot já está ocupado!")  # Mensagem de depuração se o slot estiver ocupado
         return False
-
-
 
     def verificarVizinhas(self, linha, coluna, carta):
         captura = False
@@ -155,31 +162,51 @@ class Tabuleiro:
         alturaTela = self.tela.get_height()
         posX = 50
         posY = alturaTela // 2 - 300
+
         if turno == 1:
             cartas = self.p1.cartas_selecionadas
         else:
             cartas = [self.imagemCartaViradaBlue] * self.p1.numCartas
 
         for i in range(len(cartas)):
-            if isinstance(cartas[i], pygame.Surface):
-                carta_img = cartas[i]
-            else:
+            # Verifica se a carta é uma instância da classe Carta
+            if isinstance(cartas[i], Carta):
                 carta_img = cartas[i].visual
-                cartas[i].rect.center = (posX, posY)
-            carta_img = pygame.transform.smoothscale(carta_img, (
-            175, 175))  # Garante que a imagem da carta seja dimensionada corretamente
+                carta_img = pygame.transform.smoothscale(carta_img, (175, 175))  # Redimensiona a imagem da carta
+                
+                # Redimensiona o rect da carta
+                nova_largura = 120
+                nova_altura = 150
+                # Cria um novo rect centralizado na posição da carta
+                cartas[i].rect = pygame.Rect(0, 0, nova_largura, nova_altura)
+                cartas[i].rect.center = (posX + 87.5, posY + 87.5)  # Centraliza o rect em relação à carta
+
+            else:
+                carta_img = cartas[i]
+                carta_img = pygame.transform.smoothscale(carta_img, (175, 175))
+
+                # Cria um rect para a imagem da carta virada com largura reduzida
+                nova_largura = 120  # Define a nova largura desejada
+                nova_altura = 150   # Define a nova altura desejada
+                rect = pygame.Rect(0, 0, nova_largura, nova_altura)
+                rect.center = (posX + 87.5, posY + 87.5)  # Centraliza o rect
+
+            # Desenha a carta na tela
             self.tela.blit(carta_img, (posX, posY))
 
+            # Atualiza a posição para a próxima carta
             posY += 200
             if i == 2 and len(cartas) > 3:
                 posX += 150
                 posY = alturaTela // 2 - 200
 
+
+
     def desenhar_cartas_red(self, turno):
         alturaTela = self.tela.get_height()
         larguraTela = self.tela.get_width()
 
-        posX = larguraTela - 225
+        posX = larguraTela - 200
         posY = alturaTela // 2 - 300  # Altura da linha de 2
 
         if turno == 2:
@@ -188,19 +215,37 @@ class Tabuleiro:
             cartas = [self.imagemCartaViradaRed] * self.p2.numCartas
 
         for i in range(len(cartas)):
-            if isinstance(cartas[i], pygame.Surface):
-                carta_img = cartas[i]
-            else:
+            # Verifica se a carta é uma instância da classe Carta
+            if isinstance(cartas[i], Carta):
                 carta_img = cartas[i].visual
-                cartas[i].rect.center = (posX, posY)  # Criar o retângulo com as dimensões corretas
-            carta_img = pygame.transform.smoothscale(carta_img, (
-                175, 175))  # Garante que a imagem da carta seja dimensionada corretamente
-            self.tela.blit(carta_img, (posX, posY))
+                carta_img = pygame.transform.smoothscale(carta_img, (175, 175))  # Redimensiona a imagem da carta
+                
+                # Cria um rect para a carta com tamanho 120x150
+                cartas[i].rect = carta_img.get_rect(size=(120, 150))
+                cartas[i].rect.center = (posX + 60, posY + 75)  # Centraliza o rect
 
+                # Desenha a carta na tela usando seu rect
+                # Desloca a imagem para que fique centralizada no rect
+                image_rect = carta_img.get_rect(center=cartas[i].rect.center)
+                self.tela.blit(carta_img, image_rect.topleft)
+            else:
+                carta_img = cartas[i]
+                carta_img = pygame.transform.smoothscale(carta_img, (175, 175))
+
+                # Se for uma imagem de carta virada, cria um rect para ela com tamanho 120x150
+                rect = carta_img.get_rect(size=(120, 150))
+                rect.center = (posX + 60, posY + 75)  # Centraliza o rect
+
+                # Desenha a carta na tela usando o rect criado
+                image_rect = carta_img.get_rect(center=rect.center)
+                self.tela.blit(carta_img, image_rect.topleft)
+
+            # Atualiza a posição para a próxima carta
             posY += 200
             if i == 2 and len(cartas) > 3:
                 posX -= 150
                 posY = alturaTela // 2 - 200
+
 
     def getAdversario(self, p):
         return self.p1 if p == self.p2 else self.p2

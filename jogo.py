@@ -126,6 +126,8 @@ class Jogo:
         cartas = self.player1.cartas_selecionadas if vez == 1 else self.player2.cartas_selecionadas
 
         for carta in cartas:
+            pygame.draw.rect(self.tela_principal, (255, 0, 0), carta.rect, 2)
+            pygame.display.flip()
             if carta.rect.collidepoint(posicao_mouse):
                 print(f'Carta selecionada')
                 return carta  # Retorna a carta clicada
@@ -135,7 +137,7 @@ class Jogo:
     def limparTela(self):
         self.tela_principal.blit(self.bg, (0, 0))
 
-    def run(self, altura_tela, largura_tela):
+    def run(self):
         turno = 1  # 1 for player 1, 2 for player 2
         carta_selecionada = None
 
@@ -243,4 +245,4 @@ class Jogo:
 
 if __name__ == "__main__":
     game = Jogo(LARGURA_TELA, ALTURA_TELA)
-    game.run(LARGURA_TELA, ALTURA_TELA)
+    game.run()
