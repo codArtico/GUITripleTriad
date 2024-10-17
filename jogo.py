@@ -114,7 +114,7 @@ class Jogo:
         self.posicao_animacao_x += self.velocidade_animacao
 
         if self.posicao_animacao_x >= self.tela_principal.get_width() / 2 - 350 and self.animacaoPlusAtiva and self.trava:
-            time.sleep(2)
+            time.sleep(1)
             self.trava=False
 
         # Verifica se a imagem saiu da tela
@@ -197,16 +197,12 @@ class Jogo:
                                                     self.animacaoPlusAtiva = True
                                                 else:
                                                     self.sfxCaptura.play()
+
                                             if turno == 1:
-                                                if carta_selecionada in self.player1.cartas_selecionadas:
-                                                    self.player1.cartas_selecionadas.remove(carta_selecionada)  # Remove a carta do jogador 1
-                                                else:
-                                                    print("Erro: Carta selecionada não está na lista de cartas_selecionadas do jogador 1")
+                                                self.player1.numCartas -= 1
+                                                
                                             else:
-                                                if carta_selecionada in self.player2.cartas_selecionadas:
-                                                    self.player2.cartas_selecionadas.remove(carta_selecionada)  # Remove a carta do jogador 2
-                                                else:
-                                                    print("Erro: Carta selecionada não está na lista de cartas_selecionadas do jogador 2")
+                                                self.player2.numCartas -= 1
 
                                             carta_selecionada = None  # Reset the selected card
                                             turno = self.switchTurno(turno)
