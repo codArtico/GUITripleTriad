@@ -223,6 +223,8 @@ class Jogo:
                 self.menuInicial.desenharMenu()
             else:
                 self.board.desenharTabuleiro(self.bg, turno, self.bgX, self.bgY)
+                self.player1.desenharPontuacao(self.telaPrincipal, LARGURA_TELA*0.1, 20)  # Exibe a pontuação do player 1 no canto superior esquerdo
+                self.player2.desenharPontuacao(self.telaPrincipal, LARGURA_TELA * 0.8, 20)  # Exibe a pontuação do player 2 logo abaixo
 
             # Game end condition
             if self.board.cartasColocadas == 9:
