@@ -5,6 +5,7 @@ def carregarImagens():
     pygame.display.set_icon(icon)
 
     bg = pygame.image.load(os.path.join('imagens', 'fundo.png'))
+
     imagemSlot = pygame.image.load(os.path.join('imagens', 'slot.png'))
     imagemBorda = pygame.image.load(os.path.join('imagens', 'borda.png'))
     logo = pygame.image.load(os.path.join('imagens', 'logo.png'))
@@ -45,13 +46,21 @@ def carregarSfxs():
 class Jogo:
     def __init__(self, largura_tela, altura_tela):
         pygame.init()
-        self.tela_principal = pygame.display.set_mode((largura_tela, altura_tela), pygame.RESIZABLE)
+        self.tela_principal = pygame.display.set_mode((largura_tela, altura_tela), pygame.FULLSCREEN)
         pygame.display.set_caption("Triple Triad")
         self.fps = pygame.time.Clock()
         self.running = True
         self.jogo_iniciado = False
 
         self.bg, self.imagemSlot, self.imagemBorda, self.logo, self.botao, self.bIni, self.bSair, self.cartaViradaBlue,self.cartaViradaRed, self.imgPlus = carregarImagens()
+
+        
+        # Dimensões da imagem de fundo
+        self.bg_largura, self.bg_altura = self.bg.get_size()
+
+            # Calcular a posição para centralizar a imagem de fundo
+        self.bg_pos_x = (LARGURA_TELA - self.bg_largura) // 2
+        self.bg_pos_y = (ALTURA_TELA - self.bg_altura) // 2
 
         self.posicao_animacao_x = -self.imgPlus.get_width()  # Começa fora da tela à esquerda
         self.posicao_animacao_y = (largura_tela - self.imgPlus.get_height()) // 2  # Centralizado verticalmente
@@ -134,9 +143,6 @@ class Jogo:
 
         return None
 
-    def limparTela(self):
-        self.tela_principal.blit(self.bg, (0, 0))
-
     def run(self):
         turno = 1  # 1 for player 1, 2 for player 2
         carta_selecionada = None
@@ -144,12 +150,14 @@ class Jogo:
         while self.running:
             self.fps.tick(30)
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:  # Sai do modo fullscreen
+                        pygame.quit()
+                        exit()
 
-                if event.type == pygame.VIDEORESIZE:
-                    self.tela_principal = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
+
+                # if event.type == pygame.VIDEORESIZE:
+                #     self.tela_principal = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
 
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -160,9 +168,8 @@ class Jogo:
                         if self.menu_inicial.click_botao(botao_iniciar, mouse_x, mouse_y):
                             self.sfxBotao.play()
                             self.mesa = Mesa(self.player1, self.player2)
-                            self.mesa.distribuir_cartas(self.tela_principal, self.bg, self.sfxCardPick)
+                            self.mesa.distribuir_cartas(self.tela_principal, self.bg,self.bg_pos_x,self.bg_pos_y, self.sfxCardPick)
                             self.swap()
-                            self.limparTela()
                             self.jogo_iniciado = True
 
                         elif self.menu_inicial.click_botao(botao_sair_menu, mouse_x, mouse_y):
@@ -212,7 +219,7 @@ class Jogo:
             if not self.jogo_iniciado:
                 self.menu_inicial.desenharMenu()
             else:
-                self.board.desenharTabuleiro(self.bg, turno)
+                self.board.desenharTabuleiro(self.bg, turno, self.bg_pos_x, self.bg_pos_y)
 
             # Game end condition
             if self.board.cartasColocadas == 9:
@@ -228,8 +235,6 @@ class Jogo:
                 self.jogo_iniciado = False
                 self.player1 = Player(1)
                 self.player2 = Player(2)
-                # Reinicie o tamanho da tela para os valores originais
-                self.tela_principal = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA), pygame.RESIZABLE)
                 
                 # Recrie o tabuleiro com as dimensões originais
                 self.board = Tabuleiro(self.tela_principal, self.imagemSlot, self.imagemBorda, LARGURA_TELA,

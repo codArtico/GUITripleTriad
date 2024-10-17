@@ -23,11 +23,17 @@ class Tabuleiro:
         self.imagemCartaViradaBlue = cartaViradaBlue
         self.imagemCartaViradaRed = cartaViradaRed
         self.linhas, self.colunas = 3, 3
-        self.altura_slot = altura // 1.2 // self.linhas
-        self.largura_slot = self.altura_slot
+        
+        # Proporções para largura e altura do slot
+        proporcao_slot = 0.15  # Porcentagem da largura da tela
+        self.largura_slot = int(largura * proporcao_slot)
+        self.altura_slot = self.largura_slot  # Mantém proporção quadrada
+
         self.tamanhoBorda = 5
         self.larguraTabuleiro = self.largura_slot * self.colunas
         self.alturaTabuleiro = self.altura_slot * self.linhas
+        
+        # Centralização do tabuleiro
         self.offset_x = (largura - self.larguraTabuleiro) // 2
         self.offset_y = (altura - self.alturaTabuleiro) // 2
 
@@ -36,12 +42,11 @@ class Tabuleiro:
         for linha in range(self.linhas):
             for coluna in range(self.colunas):
                 rect = pygame.Rect(self.offset_x + coluna * self.largura_slot,
-                                   self.offset_y + linha * self.altura_slot,
-                                   self.largura_slot, self.altura_slot)
+                                    self.offset_y + linha * self.altura_slot,
+                                    self.largura_slot, self.altura_slot)
                 self.slots[(linha, coluna)] = {'rect': rect, 'carta': None}
-                print(f'Slot criado em: {self.slots[(linha,coluna)]['rect']}')
-        self.cartasColocadas = 0
 
+        self.cartasColocadas = 0
         self.p1 = p1
         self.p2 = p2
 
@@ -57,8 +62,8 @@ class Tabuleiro:
         return False  # Nenhum slot disponível foi clicado
 
 
-    def desenharTabuleiro(self, bg, turno):
-        self.tela.blit(bg, (0, 0))
+    def desenharTabuleiro(self, bg, turno, bgX, bgY):
+        self.tela.blit(bg, (bgX, bgY))
         self.desenhar_cartas_blue(turno)
         self.desenhar_cartas_red(turno)
 
@@ -67,20 +72,25 @@ class Tabuleiro:
             pos_y = self.offset_y + linha * self.altura_slot
             slot['rect'].topleft = (pos_x, pos_y)
 
-            slot_imagem = pygame.transform.scale(self.imagemSlot, (self.largura_slot, self.altura_slot))
+            # Redimensionar e desenhar a borda
             borda = pygame.transform.scale(self.imagemBorda, (
                 self.largura_slot + 2 * self.tamanhoBorda, self.altura_slot + 2 * self.tamanhoBorda))
-
             self.tela.blit(borda, (pos_x - self.tamanhoBorda, pos_y - self.tamanhoBorda))
+
+            # Redimensionar e desenhar o slot
+            slot_imagem = pygame.transform.scale(self.imagemSlot, (self.largura_slot, self.altura_slot))
             self.tela.blit(slot_imagem, slot['rect'].topleft)
 
             # Desenha a carta se existir
             if slot['carta'] is not None:
                 carta = slot['carta']
-                carta.visual = pygame.transform.smoothscale(carta.visual, (175, 175))  # Redimensiona a imagem da carta
-                carta.rect = pygame.Rect(pos_x + (self.largura_slot - 175) // 2, 
-                                        pos_y + (self.altura_slot - 175) // 2, 175, 175)  # Centraliza o rect da carta
-                self.tela.blit(carta.visual, carta.rect.topleft)  # Alinha a imagem com o rect da carta
+                # Redimensionar a carta para manter a proporção
+                nova_largura = int(self.largura_slot * 0.8)  # Ajuste conforme necessário
+                nova_altura = int(self.altura_slot * 0.8)  # Ajuste conforme necessário
+                carta.visual = pygame.transform.smoothscale(carta.visual, (nova_largura, nova_altura))
+                carta.rect = pygame.Rect(pos_x + (self.largura_slot - nova_largura) // 2, 
+                                         pos_y + (self.altura_slot - nova_altura) // 2, nova_largura, nova_altura)
+                self.tela.blit(carta.visual, carta.rect.topleft)
 
     def colocarCarta(self, carta, linha, coluna, turno):
     # Verifica se o slot está vazio antes de colocar a carta
@@ -160,7 +170,8 @@ class Tabuleiro:
 
     def desenhar_cartas_blue(self, turno):
         alturaTela = self.tela.get_height()
-        posX = 50
+        larguraTela = self.tela.get_width()
+        posX = larguraTela - larguraTela + 50
         posY = alturaTela // 2 - 300
 
         if turno == 1:
@@ -206,7 +217,7 @@ class Tabuleiro:
         alturaTela = self.tela.get_height()
         larguraTela = self.tela.get_width()
 
-        posX = larguraTela - 200
+        posX = larguraTela - 180
         posY = alturaTela // 2 - 300  # Altura da linha de 2
 
         if turno == 2:

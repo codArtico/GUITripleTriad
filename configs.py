@@ -16,7 +16,7 @@ pygame.font.init()
 pygame.mixer.init()
 pygame.mixer.music.load(os.path.join('audios', 'theme.mp3'))
 
-LARGURA_TELA, ALTURA_TELA = 1366, 768
+LARGURA_TELA, ALTURA_TELA = 1366,768
 
 oposto = {
     "cima": "baixo",

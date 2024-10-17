@@ -9,8 +9,8 @@ class Mesa:
         self.players = [player1, player2]
         self.turno_atual = 0  # Índice para alternar entre os jogadores
 
-    def desenhar_cartas_na_mesa(self, tela, bg):
-        tela.blit(bg, (0, 0))
+    def desenhar_cartas_na_mesa(self, tela, bg, bgX,bgY):
+        tela.blit(bg, (bgX, bgY))
         largura_tela, altura_tela = tela.get_size()
 
         largura_carta = self.cartas_na_mesa[0].visual.get_width()
@@ -41,10 +41,10 @@ class Mesa:
                 return carta
         return None
 
-    def distribuir_cartas(self, tela, bg, sfxCardPick):
+    def distribuir_cartas(self, tela, bg, bg_pos_x, bg_pos_y, sfxCardPick):
         carta_escolhida = None
         while len(self.cartas_na_mesa) > 0:
-            self.desenhar_cartas_na_mesa(tela, bg)
+            self.desenhar_cartas_na_mesa(tela, bg, bg_pos_x,bg_pos_y)
             self.desenhar_turno(tela)
             pygame.display.update()
 
