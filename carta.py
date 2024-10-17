@@ -38,7 +38,7 @@ class Carta:
     def __init__(self, player, posicaoProp=(0.5, 0.5)):
         self.fonte = pygame.font.Font(None, 30)
         self.dono = player
-        self.valores = cartaForcada()
+        self.valores = gerarValor()
         self.visual = self.desenharCarta()
 
         # Calcula a posição inicial baseada em valores relativos à tela

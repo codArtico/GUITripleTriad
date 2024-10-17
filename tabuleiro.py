@@ -122,6 +122,7 @@ class Tabuleiro:
         somas = []
         cartasAdj = {}
 
+        # Itera sobre as direções para encontrar cartas adjacentes
         for direcao, (dx, dy) in direcoes.items():
             ax, ay = linha + dx, coluna + dy
 
@@ -137,12 +138,12 @@ class Tabuleiro:
                 if valorAdjacente == "A":
                     valorAdjacente = 10
 
-                if valorAtual > valorAdjacente:
-                    if cartaAdjacente.dono != carta.dono:
-                        cartaAdjacente.switchDono(carta.dono)
-                        carta.dono.upPoint()  # Atualiza a pontuação do jogador que capturou a carta
-                        self.getAdversario(carta.dono).downPoint()  # Atualiza a pontuação do adversário
-                        captura = True
+                if valorAtual > valorAdjacente and cartaAdjacente.dono != carta.dono:
+                    # Captura a carta adjacente
+                    cartaAdjacente.switchDono(carta.dono)
+                    carta.dono.upPoint()  # Atualiza a pontuação do jogador que capturou a carta
+                    self.getAdversario(carta.dono).downPoint()  # Atualiza a pontuação do adversário
+                    captura = True
 
                 soma = valorAtual + valorAdjacente
                 somas.append((direcao, soma))
@@ -155,15 +156,17 @@ class Tabuleiro:
                 somaDict[soma] = []
             somaDict[soma].append(direcao)
 
-        # Verifica se há múltiplas direções com o mesmo valor de soma
+        # Verifica se há múltiplas direções com o mesmo valor de soma (regra PLUS)
         for soma, direcoesLista in somaDict.items():
             if len(direcoesLista) > 1:
                 for direcao in direcoesLista:
                     cartaAdj = cartasAdj[direcao]
                     if cartaAdj.dono != carta.dono:
+                        # Captura cartas adjacentes de acordo com a regra PLUS
                         cartaAdj.switchDono(carta.dono)
                         carta.dono.upPoint()
                         self.getAdversario(carta.dono).downPoint()
+                        print(f'{carta.dono.pontos} x {self.getAdversario(carta.dono).pontos}')
                         captura = True
                         plus = True
 
