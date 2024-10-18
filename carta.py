@@ -39,7 +39,8 @@ class Carta:
         self.fonte = pygame.font.Font(None, 30)
         self.dono = player
         self.valores = gerarValor()
-        self.visual = self.desenharCarta()
+        self.visual = self.desenharCarta(200,200)
+        self.selected = False
 
         # Calcula a posição inicial baseada em valores relativos à tela
         x = 1366 * posicaoProp[0]
@@ -47,8 +48,7 @@ class Carta:
 
         self.rect = self.visual.get_rect()  # Define o rect de forma relativa
 
-    def desenharCarta(self):
-        largura, altura = 200, 200
+    def desenharCarta(self,largura,altura):
         desenho = None
         try:
             if self.dono is None:
@@ -61,7 +61,6 @@ class Carta:
         except pygame.error as e:
             desenho = pygame.Surface((largura, altura))
             desenho.fill((0, 0, 0))  # Preenche com preto para indicar erro
-
         self.renderValores(desenho, largura, altura)
         
         return desenho
@@ -81,5 +80,5 @@ class Carta:
 
     def switchDono(self, p):
         self.dono = p
-        self.visual = self.desenharCarta()
+        self.visual = self.desenharCarta(200,200)
         self.rect = self.visual.get_rect(center=self.rect.center)  # Atualiza o rect com a nova imagem

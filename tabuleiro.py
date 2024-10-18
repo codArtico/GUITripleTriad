@@ -186,8 +186,13 @@ class Tabuleiro:
         for i in range(len(cartas)):
             # Verifica se a carta é uma instância da classe Carta
             if isinstance(cartas[i], Carta):
-                imgCarta = cartas[i].visual
-                imgCarta = pygame.transform.smoothscale(imgCarta, (175, 175))  # Redimensiona a imagem da carta
+                if not cartas[i].selected:
+                    imgCarta = cartas[i].visual
+                    imgCarta = pygame.transform.smoothscale(imgCarta, (175, 175))  # Redimensiona a imagem da carta
+                else:
+                    imgCarta = cartas[i]
+                    imgCarta = imgCarta.desenharCarta(202,202)
+                    #imgCarta = pygame.transform.smoothscale(imgCarta, (205, 205))
                 
                 # Redimensiona o rect da carta
                 newLargura = 120
@@ -195,6 +200,9 @@ class Tabuleiro:
                 # Cria um novo rect centralizado na posição da carta
                 cartas[i].rect = pygame.Rect(0, 0, newLargura, newAltura)
                 cartas[i].rect.center = (posX + 87.5, posY + 87.5)  # Centraliza o rect em relação à carta
+
+                imgRect = imgCarta.get_rect(center=cartas[i].rect.center)
+                self.tela.blit(imgCarta, imgRect.topleft)
 
             else:
                 imgCarta = cartas[i]
@@ -205,9 +213,9 @@ class Tabuleiro:
                 newAltura = 150   # Define a nova altura desejada
                 rect = pygame.Rect(0, 0, newLargura, newAltura)
                 rect.center = (posX + 87.5, posY + 87.5)  # Centraliza o rect
-
+                imgRect = imgCarta.get_rect(center=rect.center)
             # Desenha a carta na tela
-            self.tela.blit(imgCarta, (posX, posY))
+            self.tela.blit(imgCarta, imgRect.topleft)
 
             # Atualiza a posição para a próxima carta
             posY += 200
@@ -232,8 +240,13 @@ class Tabuleiro:
         for i in range(len(cartas)):
             # Verifica se a carta é uma instância da classe Carta
             if isinstance(cartas[i], Carta):
-                imgCarta = cartas[i].visual
-                imgCarta = pygame.transform.smoothscale(imgCarta, (175, 175))  # Redimensiona a imagem da carta
+                if not cartas[i].selected:
+                    imgCarta = cartas[i].visual
+                    imgCarta = pygame.transform.smoothscale(imgCarta, (175, 175))  # Redimensiona a imagem da carta
+                else:
+                    imgCarta = cartas[i]
+                    imgCarta = imgCarta.desenharCarta(202,202)
+                    #imgCarta = pygame.transform.smoothscale(imgCarta, (205, 205))
                 
                 # Cria um rect para a carta com tamanho 120x150
                 cartas[i].rect = imgCarta.get_rect(size=(120, 150))

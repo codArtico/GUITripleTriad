@@ -145,6 +145,7 @@ class Jogo:
             pygame.draw.rect(self.telaPrincipal, (255, 0, 0), carta.rect, 2)
             pygame.display.flip()
             if carta.rect.collidepoint(posMouse):
+                carta.selected = True
                 print(f'Carta selecionada')
                 return carta  # Retorna a carta clicada
 
@@ -195,6 +196,7 @@ class Jogo:
                                     if slot['rect'].collidepoint(mouseX,mouseY):
                                         print(f"Slot at ({linha}, {coluna}) was clicked.")
                                         if self.board.slots[(linha, coluna)]['carta'] is None:  # Check if the slot is empty
+                                            cartaSelecionada.visual = cartaSelecionada.desenharCarta(200,200)
                                             self.board.colocarCarta(cartaSelecionada, linha, coluna, turno)
                                             self.select = False
                                             captura, plus = self.board.verificarVizinhas(linha, coluna, cartaSelecionada)
