@@ -179,7 +179,6 @@ class Tabuleiro:
         larguraTela = self.tela.get_width()
         posX = larguraTela - larguraTela + 50
         posY = alturaTela // 2 - 300
-
         if turno == 1:
             cartas = self.p1.cartasSelecionadas
         else:
@@ -203,8 +202,7 @@ class Tabuleiro:
                 cartas[i].rect.center = (posX + 87.5, posY + 87.5)  # Centraliza o rect em relação à carta
 
                 imgRect = imgCarta.get_rect(center=cartas[i].rect.center)
-                self.tela.blit(imgCarta, imgRect.topleft)
-
+                cartas[i].pos = imgRect.topleft
             else:
                 imgCarta = cartas[i]
                 imgCarta = pygame.transform.smoothscale(imgCarta, (175, 175))
@@ -215,6 +213,7 @@ class Tabuleiro:
                 rect = pygame.Rect(0, 0, newLargura, newAltura)
                 rect.center = (posX + 87.5, posY + 87.5)  # Centraliza o rect
                 imgRect = imgCarta.get_rect(center=rect.center)
+
             # Desenha a carta na tela
             self.tela.blit(imgCarta, imgRect.topleft)
 
@@ -256,7 +255,8 @@ class Tabuleiro:
                 # Desenha a carta na tela usando seu rect
                 # Desloca a imagem para que fique centralizada no rect
                 imgRect = imgCarta.get_rect(center=cartas[i].rect.center)
-                self.tela.blit(imgCarta, imgRect.topleft)
+                
+                cartas[i].pos = imgRect.topleft
             else:
                 imgCarta = cartas[i]
                 imgCarta = pygame.transform.smoothscale(imgCarta, (175, 175))
@@ -267,7 +267,8 @@ class Tabuleiro:
 
                 # Desenha a carta na tela usando o rect criado
                 imgRect = imgCarta.get_rect(center=rect.center)
-                self.tela.blit(imgCarta, imgRect.topleft)
+                
+            self.tela.blit(imgCarta, imgRect.topleft)
 
             # Atualiza a posição para a próxima carta
             posY += 200

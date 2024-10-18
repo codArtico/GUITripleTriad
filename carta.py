@@ -1,6 +1,7 @@
 from configs import *
 from os.path import join
 from random import randint
+from tabuleiro import *
 
 def gerarValor():
     while True:
@@ -41,6 +42,7 @@ class Carta:
         self.valores = cartaForcada()
         self.visual = self.desenharCarta(200,200)
         self.selected = False
+        self.pos = None
 
         # Calcula a posição inicial baseada em valores relativos à tela
         x = 1366 * posicaoProp[0]
@@ -117,3 +119,36 @@ class Carta:
         self.dono = p
         self.visual = self.desenharCarta(200,200)
         self.rect = self.visual.get_rect(center=self.rect.center)  # Atualiza o rect com a nova imagem
+
+    def animarMovimento(self, tela, posIni, posFim, bg, turno, bgX, bgY, tabuleiro, duracao=60, fps=240):
+        xIni, yIni = posIni
+        xFim, yFim = posFim
+
+        clock = pygame.time.Clock()  # Inicializa o controle de tempo do Pygame
+
+        # Multiplicador de velocidade para mover a carta mais rápido, mantendo a suavidade
+        velocidade = 6  # Você pode ajustar esse valor para controlar a rapidez do movimento
+
+        for i in range(duracao + 1):
+            self.limparTela(tabuleiro, bg, turno, bgX, bgY)
+            
+
+            # Calcula a posição atual da carta usando interpolação linear, ajustando a velocidade
+            progresso = min(1, i * velocidade / duracao)  # Mantém o progresso entre 0 e 1
+            xAtual = xIni + (xFim - xIni) * progresso
+            yAtual = yIni + (yFim - yIni) * progresso
+            if xAtual == xFim and yAtual == yFim:
+                break # Professor de Algoritmo, me perdoe, foi uma causa necessaria
+
+            # Atualiza a posição do rect da carta para a nova posição
+            self.rect.topleft = (xAtual, yAtual)
+
+            # Desenha a carta na nova posição
+            self.desenhar(tela)
+            pygame.display.flip()
+
+            clock.tick(fps) #Controla a taxa de quadros por segundo para manter a fluidez
+
+
+    def limparTela(self,tabuleiro,bg, turno, bgX, bgY):
+        tabuleiro.desenharTabuleiro(bg,turno,bgX,bgY)

@@ -194,6 +194,9 @@ class Jogo:
                                 for (linha, coluna), slot in self.board.slots.items():
                                     print(f"Checking slot at ({linha}, {coluna}) with rect: {slot['rect']}")
                                     if slot['rect'].collidepoint(mouseX,mouseY):
+                                        posInicial = cartaSelecionada.pos
+                                        posFinal = slot['rect'].topleft
+                                        cartaSelecionada.animarMovimento(self.telaPrincipal, posInicial, posFinal, self.bg, turno, self.bgX, self.bgY, self.board)
                                         print(f"Slot at ({linha}, {coluna}) was clicked.")
                                         if self.board.slots[(linha, coluna)]['carta'] is None:  # Check if the slot is empty
                                             cartaSelecionada.visual = cartaSelecionada.desenharCarta(200,200)
