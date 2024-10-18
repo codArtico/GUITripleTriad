@@ -140,7 +140,9 @@ class Tabuleiro:
 
                 if valorAtual > valorAdjacente and cartaAdjacente.dono != carta.dono:
                     # Captura a carta adjacente
-                    cartaAdjacente.switchDono(carta.dono)
+                    cartaAdjacente = cartaAdjacente.animaCaptura(self.tela,carta.dono)
+                    
+                    
                     carta.dono.upPoint()  # Atualiza a pontuação do jogador que capturou a carta
                     self.getAdversario(carta.dono).downPoint()  # Atualiza a pontuação do adversário
                     captura = True
@@ -163,7 +165,7 @@ class Tabuleiro:
                     cartaAdj = cartasAdj[direcao]
                     if cartaAdj.dono != carta.dono:
                         # Captura cartas adjacentes de acordo com a regra PLUS
-                        cartaAdj.switchDono(carta.dono)
+                        cartaAdj = cartaAdj.animaCaptura(self.tela,carta.dono)
                         carta.dono.upPoint()
                         self.getAdversario(carta.dono).downPoint()
                         print(f'{carta.dono.pontos} x {self.getAdversario(carta.dono).pontos}')
@@ -192,7 +194,6 @@ class Tabuleiro:
                 else:
                     imgCarta = cartas[i]
                     imgCarta = imgCarta.desenharCarta(202,202)
-                    #imgCarta = pygame.transform.smoothscale(imgCarta, (205, 205))
                 
                 # Redimensiona o rect da carta
                 newLargura = 120

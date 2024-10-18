@@ -38,7 +38,7 @@ class Carta:
     def __init__(self, player, posicaoProp=(0.5, 0.5)):
         self.fonte = pygame.font.Font(None, 30)
         self.dono = player
-        self.valores = gerarValor()
+        self.valores = cartaForcada()
         self.visual = self.desenharCarta(200,200)
         self.selected = False
 
@@ -71,12 +71,47 @@ class Carta:
             texto = self.fonte.render(str(self.valores[direcao]), True, (255, 255, 255))
             desenho.blit(texto, (pos[0] - texto.get_width() // 2, pos[1] - texto.get_height() // 2))
 
+    def animaCaptura(self, tela, novoDono):
+        r, g, b = 100, 100, 100  # Cores iniciais
+
+        # Animação
+        for i in range(10):  # 10 frames para a animação
+            if i == 5:
+                self.switchDono(novoDono)  # Troca de dono quando i atinge 5
+                r, g, b = 255, 255, 255
+            if i <= 5:
+                
+                r = min(r + 30, 255)  # Garante que não passe de 255
+                g = min(g + 30, 255) 
+                b = min(b + 30, 255)
+            else:
+                r = max(r - 30, 0)  # Garante que não fique abaixo de 0
+                g = max(g - 30, 0)
+                b = max(b - 30, 0)
+
+            # Desenha a carta com novo tamanho
+            self.visual = self.desenharCarta(175, 175)
+            self.visual.fill((r, g, b), special_flags=pygame.BLEND_RGB_ADD)
+
+            # Atualiza o rect da carta
+            self.rect = self.visual.get_rect(center=self.rect.center)  # Atualiza o rect
+            
+            # Limpa a tela e desenha
+            self.desenhar(tela)  # Desenha a carta
+            pygame.display.flip()
+            pygame.time.delay(1)  # Atraso para suavizar a animação
+
+        # Retorna ao tamanho original
+        self.visual = self.desenharCarta(200, 200)
+        return self
+
+
     def desenhar(self, tela):
         # Desenha a carta na tela
         tela.blit(self.visual, self.rect)
 
         # Desenha o retângulo vermelho sobre a carta
-        pygame.draw.rect(tela, (255, 0, 0), self.rect, 2)  # 2 é a largura da borda do retângulo
+        #pygame.draw.rect(tela, (255, 0, 0), self.rect, 2)  # 2 é a largura da borda do retângulo
 
     def switchDono(self, p):
         self.dono = p
