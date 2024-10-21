@@ -48,17 +48,17 @@ git clone https://github.com/codArtico/GUITripleTriad.git
 python jogo.py
 ```
 
-🎮 Como Jogar
+# 🎮 Como Jogar
 • Cada jogador escolhe 5 cartas do deck da mesa.
 • As cartas são colocadas em uma grade 3x3.
 • Regras de captura como Plus são aplicadas ao comparar valores das cartas adjacentes.
 • O objetivo é capturar mais cartas do oponente para vencer!
 
-🌟 Funcionalidades Futuras
+# 🌟 Funcionalidades Futuras
 • Melhorias na interface gráfica e nas animações.
 
-🖼️ Capturas de Tela
+# 🖼️ Capturas de Tela
 
 
-📝 Licença
+# 📝 Licença
 Este projeto é licenciado sob a MIT License - veja o arquivo LICENSE para mais detalhes.
