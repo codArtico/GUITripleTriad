@@ -27,19 +27,19 @@ def gerarValor():
             }
             return valores
 
-def cartaForcada():
-        valores = {}
-        valores['up'] = 4
-        valores['right'] = 4
-        valores['down'] = 4
-        valores['left'] = 4
-        return valores
+# def cartaForcada():
+#         valores = {}
+#         valores['up'] = 4
+#         valores['right'] = 4
+#         valores['down'] = 4
+#         valores['left'] = 4
+#         return valores
 
 class Carta:
     def __init__(self, player, posicaoProp=(0.5, 0.5)):
         self.fonte = pygame.font.Font(None, 30)
         self.dono = player
-        self.valores = cartaForcada()
+        self.valores = gerarValor()
         self.visual = self.desenharCarta(200,200)
         self.selected = False
         self.pos = None
@@ -73,7 +73,7 @@ class Carta:
             texto = self.fonte.render(str(self.valores[direcao]), True, (255, 255, 255))
             desenho.blit(texto, (pos[0] - texto.get_width() // 2, pos[1] - texto.get_height() // 2))
 
-    def animaCaptura(self, tela, novoDono):
+    def animaCaptura(self, tela, novoDono, bg, turno, bgX, bgY, tabuleiro):
         r, g, b = 100, 100, 100  # Cores iniciais
 
         # Animação
@@ -99,6 +99,7 @@ class Carta:
             self.rect = self.visual.get_rect(center=self.rect.center)  # Atualiza o rect
             
             # Limpa a tela e desenha
+            self.limparTela(tabuleiro, bg, turno, bgX, bgY)
             self.desenhar(tela)  # Desenha a carta
             pygame.display.flip()
             pygame.time.delay(1)  # Atraso para suavizar a animação
@@ -120,14 +121,14 @@ class Carta:
         self.visual = self.desenharCarta(200,200)
         self.rect = self.visual.get_rect(center=self.rect.center)  # Atualiza o rect com a nova imagem
 
-    def animarMovimento(self, tela, posIni, posFim, bg, turno, bgX, bgY, tabuleiro, duracao=60, fps=240):
+    def animarMovimento(self, tela, posIni, posFim, bg, turno, bgX, bgY, tabuleiro, duracao=10, fps=120):
         xIni, yIni = posIni
         xFim, yFim = posFim
 
         clock = pygame.time.Clock()  # Inicializa o controle de tempo do Pygame
 
-        # Multiplicador de velocidade para mover a carta mais rápido, mantendo a suavidade
-        velocidade = 6  # Você pode ajustar esse valor para controlar a rapidez do movimento
+        # Multiplicad0or de velocidade para mover a carta mais rápido, mantendo a suavidade
+        velocidade = 1  # Você pode ajustar esse valor para controlar a rapidez do movimento
 
         for i in range(duracao + 1):
             self.limparTela(tabuleiro, bg, turno, bgX, bgY)

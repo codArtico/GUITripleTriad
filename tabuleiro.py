@@ -115,7 +115,7 @@ class Tabuleiro:
             print("O slot já está ocupado!")  # Mensagem de depuração se o slot estiver ocupado
         return False
 
-    def verificarVizinhas(self, linha, coluna, carta):
+    def verificarVizinhas(self, linha, coluna, carta, somCaptura, bg, turno, bgX, bgY, tabuleiro):
         captura = False
         plus = False
 
@@ -140,7 +140,7 @@ class Tabuleiro:
 
                 if valorAtual > valorAdjacente and cartaAdjacente.dono != carta.dono:
                     # Captura a carta adjacente
-                    cartaAdjacente = cartaAdjacente.animaCaptura(self.tela,carta.dono)
+                    cartaAdjacente = cartaAdjacente.animaCaptura(self.tela,carta.dono, bg, turno, bgX, bgY, tabuleiro)
                     
                     
                     carta.dono.upPoint()  # Atualiza a pontuação do jogador que capturou a carta
@@ -165,7 +165,8 @@ class Tabuleiro:
                     cartaAdj = cartasAdj[direcao]
                     if cartaAdj.dono != carta.dono:
                         # Captura cartas adjacentes de acordo com a regra PLUS
-                        cartaAdj = cartaAdj.animaCaptura(self.tela,carta.dono)
+                        cartaAdj = cartaAdj.animaCaptura(self.tela,carta.dono, bg, turno, bgX, bgY, tabuleiro)
+                        somCaptura.play()
                         carta.dono.upPoint()
                         self.getAdversario(carta.dono).downPoint()
                         print(f'{carta.dono.pontos} x {self.getAdversario(carta.dono).pontos}')
