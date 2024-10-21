@@ -1,11 +1,10 @@
 from configs import *
 
 class Menu:
-    def __init__(self, tela, bg, logo, botao, bIni, bSair):
+    def __init__(self, tela, bg, logo, bIni, bSair):
         self.tela = tela
         self.bg = bg
         self.logo = logo
-        self.botao = botao
         self.bIni = bIni
         self.bSair = bSair
 

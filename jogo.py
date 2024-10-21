@@ -18,8 +18,6 @@ def carregarImagens():
     logo = pygame.image.load(os.path.join('imagens', 'logo.png'))
     logo = pygame.transform.smoothscale(logo, (400, 400))
 
-    botao = pygame.image.load(os.path.join('imagens', 'botao.png'))
-    botao = pygame.transform.smoothscale(botao, (600, 600))
     bIni = pygame.image.load(os.path.join('imagens', 'iniciar.png'))
     bIni = pygame.transform.smoothscale(bIni, (350, 85))
     bSair = pygame.image.load(os.path.join('imagens', 'sair.png'))
@@ -34,7 +32,7 @@ def carregarImagens():
     imgPlus = pygame.image.load(os.path.join('imagens', 'imgPlus.png'))
     imgPlus = pygame.transform.smoothscale(imgPlus, (800, 800))
 
-    return bg, imagemSlot, imagemBorda, logo, botao, bIni, bSair, cartaViradaBlue, cartaViradaRed, imgPlus
+    return bg, imagemSlot, imagemBorda, logo, bIni, bSair, cartaViradaBlue, cartaViradaRed, imgPlus
 
 def carregarSfxs():
     sfxCaptura = pygame.mixer.Sound(os.path.join('audios','capture.mp3'))
@@ -59,7 +57,7 @@ class Jogo:
         self.running = True
         self.jogoIniciado = False
 
-        self.bg, self.imagemSlot, self.imagemBorda, self.logo, self.botao, self.bIni, self.bSair, self.cartaViradaBlue,self.cartaViradaRed, self.imgPlus = carregarImagens()
+        self.bg, self.imagemSlot, self.imagemBorda, self.logo, self.bIni, self.bSair, self.cartaViradaBlue,self.cartaViradaRed, self.imgPlus = carregarImagens()
 
         
         # Dimensões da imagem de fundo
@@ -81,7 +79,7 @@ class Jogo:
         self.player2 = Player(2)
 
         self.board = Tabuleiro(self.telaPrincipal, self.imagemSlot, self.imagemBorda, larguraTela, alturaTela, self.player1, self.player2, self.cartaViradaBlue, self.cartaViradaRed)
-        self.menuInicial = Menu(self.telaPrincipal, self.bg, self.logo, self.botao, self.bIni, self.bSair)
+        self.menuInicial = Menu(self.telaPrincipal, self.bg, self.logo, self.bIni, self.bSair)
         self.distribuindo = False
         self.animacaoPlusAtiva = False
 
