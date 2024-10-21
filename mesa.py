@@ -54,9 +54,11 @@ class Mesa:
             cartaEscolhida = False
             while not cartaEscolhida:
                 for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        pygame.quit()
-                        exit()
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_ESCAPE:
+                            print('Pygame recebeu o esc')
+                            pygame.quit()
+                            exit()
                     if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                         mouseX, mouseY = pygame.mouse.get_pos()
                         cartaEscolhida = self.selecionarCarta(mouseX, mouseY)
@@ -76,7 +78,7 @@ class Mesa:
         pygame.display.update()
         while cartaEscolhida is None:
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+                if event.type == pygame.K_ESCAPE:
                     pygame.quit()
                     exit()
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Verifica se o botão esquerdo foi clicado

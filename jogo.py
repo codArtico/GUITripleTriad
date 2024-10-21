@@ -142,9 +142,10 @@ class Jogo:
         cartas = self.player1.cartasSelecionadas if vez == 1 else self.player2.cartasSelecionadas
 
         for carta in cartas:
-            pygame.draw.rect(self.telaPrincipal, (255, 0, 0), carta.rect, 2)
+            #pygame.draw.rect(self.telaPrincipal, (255, 0, 0), carta.rect, 2)
             pygame.display.flip()
             if carta.rect.collidepoint(posMouse):
+                carta.selected = True
                 print(f'Carta selecionada')
                 return carta  # Retorna a carta clicada
 
@@ -193,11 +194,16 @@ class Jogo:
                                 for (linha, coluna), slot in self.board.slots.items():
                                     print(f"Checking slot at ({linha}, {coluna}) with rect: {slot['rect']}")
                                     if slot['rect'].collidepoint(mouseX,mouseY):
+                                        posInicial = cartaSelecionada.pos
+                                        posFinal = slot['rect'].topleft
+                                        cartaSelecionada.animarMovimento(self.telaPrincipal, posInicial, posFinal, self.bg, turno, self.bgX, self.bgY, self.board)
+                                        self.sfxColocarCarta.play()
                                         print(f"Slot at ({linha}, {coluna}) was clicked.")
                                         if self.board.slots[(linha, coluna)]['carta'] is None:  # Check if the slot is empty
+                                            cartaSelecionada.visual = cartaSelecionada.desenharCarta(200,200)
                                             self.board.colocarCarta(cartaSelecionada, linha, coluna, turno)
                                             self.select = False
-                                            captura, plus = self.board.verificarVizinhas(linha, coluna, cartaSelecionada)
+                                            captura, plus = self.board.verificarVizinhas(linha, coluna, cartaSelecionada, self.sfxCaptura,self.bg, turno, self.bgX, self.bgY, self.board)
                                             if captura:
                                                 if plus:
                                                     self.sfxPlus.play()

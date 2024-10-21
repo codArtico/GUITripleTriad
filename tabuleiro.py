@@ -115,7 +115,7 @@ class Tabuleiro:
             print("O slot já está ocupado!")  # Mensagem de depuração se o slot estiver ocupado
         return False
 
-    def verificarVizinhas(self, linha, coluna, carta):
+    def verificarVizinhas(self, linha, coluna, carta, somCaptura, bg, turno, bgX, bgY, tabuleiro):
         captura = False
         plus = False
 
@@ -140,7 +140,9 @@ class Tabuleiro:
 
                 if valorAtual > valorAdjacente and cartaAdjacente.dono != carta.dono:
                     # Captura a carta adjacente
-                    cartaAdjacente.switchDono(carta.dono)
+                    cartaAdjacente = cartaAdjacente.animaCaptura(self.tela,carta.dono, bg, turno, bgX, bgY, tabuleiro)
+                    
+                    
                     carta.dono.upPoint()  # Atualiza a pontuação do jogador que capturou a carta
                     self.getAdversario(carta.dono).downPoint()  # Atualiza a pontuação do adversário
                     captura = True
@@ -163,7 +165,8 @@ class Tabuleiro:
                     cartaAdj = cartasAdj[direcao]
                     if cartaAdj.dono != carta.dono:
                         # Captura cartas adjacentes de acordo com a regra PLUS
-                        cartaAdj.switchDono(carta.dono)
+                        cartaAdj = cartaAdj.animaCaptura(self.tela,carta.dono, bg, turno, bgX, bgY, tabuleiro)
+                        somCaptura.play()
                         carta.dono.upPoint()
                         self.getAdversario(carta.dono).downPoint()
                         print(f'{carta.dono.pontos} x {self.getAdversario(carta.dono).pontos}')
@@ -177,7 +180,6 @@ class Tabuleiro:
         larguraTela = self.tela.get_width()
         posX = larguraTela - larguraTela + 50
         posY = alturaTela // 2 - 300
-
         if turno == 1:
             cartas = self.p1.cartasSelecionadas
         else:
@@ -186,8 +188,12 @@ class Tabuleiro:
         for i in range(len(cartas)):
             # Verifica se a carta é uma instância da classe Carta
             if isinstance(cartas[i], Carta):
-                imgCarta = cartas[i].visual
-                imgCarta = pygame.transform.smoothscale(imgCarta, (175, 175))  # Redimensiona a imagem da carta
+                if not cartas[i].selected:
+                    imgCarta = cartas[i].visual
+                    imgCarta = pygame.transform.smoothscale(imgCarta, (175, 175))  # Redimensiona a imagem da carta
+                else:
+                    imgCarta = cartas[i]
+                    imgCarta = imgCarta.desenharCarta(202,202)
                 
                 # Redimensiona o rect da carta
                 newLargura = 120
@@ -196,6 +202,8 @@ class Tabuleiro:
                 cartas[i].rect = pygame.Rect(0, 0, newLargura, newAltura)
                 cartas[i].rect.center = (posX + 87.5, posY + 87.5)  # Centraliza o rect em relação à carta
 
+                imgRect = imgCarta.get_rect(center=cartas[i].rect.center)
+                cartas[i].pos = imgRect.topleft
             else:
                 imgCarta = cartas[i]
                 imgCarta = pygame.transform.smoothscale(imgCarta, (175, 175))
@@ -205,9 +213,10 @@ class Tabuleiro:
                 newAltura = 150   # Define a nova altura desejada
                 rect = pygame.Rect(0, 0, newLargura, newAltura)
                 rect.center = (posX + 87.5, posY + 87.5)  # Centraliza o rect
+                imgRect = imgCarta.get_rect(center=rect.center)
 
             # Desenha a carta na tela
-            self.tela.blit(imgCarta, (posX, posY))
+            self.tela.blit(imgCarta, imgRect.topleft)
 
             # Atualiza a posição para a próxima carta
             posY += 200
@@ -232,8 +241,13 @@ class Tabuleiro:
         for i in range(len(cartas)):
             # Verifica se a carta é uma instância da classe Carta
             if isinstance(cartas[i], Carta):
-                imgCarta = cartas[i].visual
-                imgCarta = pygame.transform.smoothscale(imgCarta, (175, 175))  # Redimensiona a imagem da carta
+                if not cartas[i].selected:
+                    imgCarta = cartas[i].visual
+                    imgCarta = pygame.transform.smoothscale(imgCarta, (175, 175))  # Redimensiona a imagem da carta
+                else:
+                    imgCarta = cartas[i]
+                    imgCarta = imgCarta.desenharCarta(202,202)
+                    #imgCarta = pygame.transform.smoothscale(imgCarta, (205, 205))
                 
                 # Cria um rect para a carta com tamanho 120x150
                 cartas[i].rect = imgCarta.get_rect(size=(120, 150))
@@ -242,7 +256,8 @@ class Tabuleiro:
                 # Desenha a carta na tela usando seu rect
                 # Desloca a imagem para que fique centralizada no rect
                 imgRect = imgCarta.get_rect(center=cartas[i].rect.center)
-                self.tela.blit(imgCarta, imgRect.topleft)
+                
+                cartas[i].pos = imgRect.topleft
             else:
                 imgCarta = cartas[i]
                 imgCarta = pygame.transform.smoothscale(imgCarta, (175, 175))
@@ -253,7 +268,8 @@ class Tabuleiro:
 
                 # Desenha a carta na tela usando o rect criado
                 imgRect = imgCarta.get_rect(center=rect.center)
-                self.tela.blit(imgCarta, imgRect.topleft)
+                
+            self.tela.blit(imgCarta, imgRect.topleft)
 
             # Atualiza a posição para a próxima carta
             posY += 200
