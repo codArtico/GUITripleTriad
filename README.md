@@ -39,9 +39,13 @@ Clone o Repositório:
 
 Para instalar as dependências do projeto, execute o seguinte comando:
 
+1. Execute o seguinte comando:
 ```bash
-# Copie o comando abaixo
 git clone https://github.com/codArtico/GUITripleTriad.git
+```
+2. Execute o arquivo principal
+```bash
+python jogo.py
 ```
 
 🎮 Como Jogar
@@ -49,6 +53,7 @@ git clone https://github.com/codArtico/GUITripleTriad.git
 • As cartas são colocadas em uma grade 3x3.
 • Regras de captura como Plus são aplicadas ao comparar valores das cartas adjacentes.
 • O objetivo é capturar mais cartas do oponente para vencer!
+
 🌟 Funcionalidades Futuras
 • Melhorias na interface gráfica e nas animações.
 
