@@ -49,10 +49,10 @@ python jogo.py
 ```
 
 # 🎮 Como Jogar
-• Cada jogador escolhe 5 cartas do deck da mesa.
-• As cartas são colocadas em uma grade 3x3.
-• Regras de captura como Plus são aplicadas ao comparar valores das cartas adjacentes.
-• O objetivo é capturar mais cartas do oponente para vencer!
+- Cada jogador escolhe 5 cartas do deck da mesa.
+- As cartas são colocadas em uma grade 3x3.
+- Regras de captura como Plus são aplicadas ao comparar valores das cartas adjacentes.
+- O objetivo é capturar mais cartas do oponente para vencer!
 
 # 🌟 Funcionalidades Futuras
 • Melhorias na interface gráfica e nas animações.
