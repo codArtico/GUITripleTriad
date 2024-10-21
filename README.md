@@ -27,19 +27,14 @@ GUITripleTriad é uma implementação do famoso jogo de cartas **Triple Triad** 
 
 # 🔧 Funcionalidades
 
-Regras de Jogo: Suporte para regras clássicas como Basic, além de regras avançadas como Swap e Plus.
-Interface Gráfica: Interface interativa desenvolvida com Pygame.
-Animações e Efeitos: Frame a Frame utilizando laços e Pygame.
-Multiplayer Local: Jogadores alternam na escolha de cartas e nas jogadas.
+- Regras de Jogo: Suporte para regras clássicas como Basic, além de regras avançadas como Swap e Plus.
+- Interface Gráfica: Interface interativa desenvolvida com Pygame.
+- Animações e Efeitos: Frame a Frame utilizando laços e Pygame.
+- Multiplayer Local: Jogadores alternam na escolha de cartas e nas jogadas.
 
-# 📦 Como Configurar o Ambiente
-Clone o Repositório:
+# 📦 Como Configurar o Ambiente e rodar o jogo
 
-## Como Instalar
-
-Para instalar as dependências do projeto, execute o seguinte comando:
-
-1. Execute o seguinte comando:
+1. Clone o Repositório::
 ```bash
 git clone https://github.com/codArtico/GUITripleTriad.git
 ```
