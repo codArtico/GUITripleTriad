@@ -26,15 +26,24 @@ class Mesa:
             carta.rect.center = (x, y)
             tela.blit(carta.visual, carta.rect)
 
-    def desenharTurno(self, tela):
-        jogadorAtual = self.players[self.turnoAtual]
+    @staticmethod
+    def desenharTurno(tela,p1,p2,turnoAtual,verificador,bgLetras):
+        players = [p1,p2]
+        fonte = pygame.font.Font(None, 36)
+
+        jogadorAtual = players[turnoAtual]
 
         turno = f'Vez do Jogador {jogadorAtual.numPlayer}'
-        textRenderizado = self.fonte.render(turno, True, (255, 255, 255))  # Branco
+        textRenderizado = fonte.render(turno, True, (255, 255, 255))  # Branco
 
         larguraTela = tela.get_width()
         alturaTela = tela.get_height()
-        tela.blit(textRenderizado, (larguraTela // 2 - textRenderizado.get_width() // 2, alturaTela - 150))
+
+        if verificador:
+            tela.blit(textRenderizado, (larguraTela // 2 - textRenderizado.get_width() // 2 - 10, alturaTela - 150))
+        else:
+            tela.blit(bgLetras,((larguraTela // 2 - textRenderizado.get_width() // 2 - 40, alturaTela - 65)))
+            tela.blit(textRenderizado, (larguraTela // 2 - textRenderizado.get_width() // 2 - 10, alturaTela - 50))
 
     def selecionarCarta(self, mouseX, mouseY):
         for i, carta in enumerate(self.cartasMesa):
@@ -42,11 +51,11 @@ class Mesa:
                 return carta
         return None
 
-    def distribuirCartas(self, tela, bg, bgX, bgY, sfxCardPick):
+    def distribuirCartas(self, tela, bg, bgX, bgY, sfxCardPick,p1,p2,bgLetras):
         cartaEscolhida = None
         while len(self.cartasMesa) > 0:
             self.desenharMesa(tela, bg, bgX,bgY)
-            self.desenharTurno(tela)
+            self.desenharTurno(tela, p1,p2,self.turnoAtual,True,bgLetras)
             pygame.display.update()
 
             jogadorAtual = self.players[self.turnoAtual]

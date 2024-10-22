@@ -32,7 +32,10 @@ def carregarImagens():
     imgPlus = pygame.image.load(os.path.join('imagens', 'imgPlus.png'))
     imgPlus = pygame.transform.smoothscale(imgPlus, (800, 800))
 
-    return bg, imagemSlot, imagemBorda, logo, bIni, bSair, cartaViradaBlue, cartaViradaRed, imgPlus
+    bgLetras = pygame.image.load(os.path.join('imagens', 'bgLetras.png'))
+    bgLetras = pygame.transform.smoothscale(bgLetras,(257,50))
+
+    return bg, imagemSlot, imagemBorda, logo, bIni, bSair, cartaViradaBlue, cartaViradaRed, imgPlus, bgLetras
 
 def carregarSfxs():
     sfxCaptura = pygame.mixer.Sound(os.path.join('audios','capture.mp3'))
@@ -57,7 +60,7 @@ class Jogo:
         self.running = True
         self.jogoIniciado = False
 
-        self.bg, self.imagemSlot, self.imagemBorda, self.logo, self.bIni, self.bSair, self.cartaViradaBlue,self.cartaViradaRed, self.imgPlus = carregarImagens()
+        self.bg, self.imagemSlot, self.imagemBorda, self.logo, self.bIni, self.bSair, self.cartaViradaBlue,self.cartaViradaRed, self.imgPlus, self.bgLetras = carregarImagens()
 
         
         # Dimensões da imagem de fundo
@@ -174,7 +177,7 @@ class Jogo:
                         if self.menuInicial.clickBotao(bIniciar, mouseX, mouseY):
                             self.sfxBotao.play()
                             self.mesa = Mesa(self.player1, self.player2)
-                            self.mesa.distribuirCartas(self.telaPrincipal, self.bg,self.bgX,self.bgY, self.sfxCardPick)
+                            self.mesa.distribuirCartas(self.telaPrincipal, self.bg,self.bgX,self.bgY, self.sfxCardPick, self.player1,self.player2,self.bgLetras)
                             self.swap()
                             self.jogoIniciado = True
 
@@ -229,6 +232,7 @@ class Jogo:
                 self.board.desenharTabuleiro(self.bg, turno, self.bgX, self.bgY)
                 self.player1.desenharPontuacao(self.telaPrincipal, LARGURA_TELA*0.1, 20)  # Exibe a pontuação do player 1 no canto superior esquerdo
                 self.player2.desenharPontuacao(self.telaPrincipal, LARGURA_TELA * 0.8, 20)  # Exibe a pontuação do player 2 logo abaixo
+                Mesa.desenharTurno(self.telaPrincipal,self.player1,self.player2,turno-1,False,self.bgLetras)
 
             # Game end condition
             if self.board.cartasColocadas == 9:
