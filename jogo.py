@@ -35,7 +35,10 @@ def carregarImagens():
     bgLetras = pygame.image.load(os.path.join('imagens', 'bgLetras.png'))
     bgLetras = pygame.transform.smoothscale(bgLetras,(257,50))
 
-    return bg, imagemSlot, imagemBorda, logo, bIni, bSair, cartaViradaBlue, cartaViradaRed, imgPlus, bgLetras
+    imgWinP1 = pygame.image.load(os.path.join('imagens', 'winP1Esse.png')) 
+    imgWinP2 = pygame.image.load(os.path.join('imagens', 'winP2Esse.png'))
+
+    return bg, imagemSlot, imagemBorda, logo, bIni, bSair, cartaViradaBlue, cartaViradaRed, imgPlus, bgLetras, imgWinP1, imgWinP2
 
 def carregarSfxs():
     sfxCaptura = pygame.mixer.Sound(os.path.join('audios','capture.mp3'))
@@ -60,7 +63,7 @@ class Jogo:
         self.running = True
         self.jogoIniciado = False
 
-        self.bg, self.imagemSlot, self.imagemBorda, self.logo, self.bIni, self.bSair, self.cartaViradaBlue,self.cartaViradaRed, self.imgPlus, self.bgLetras = carregarImagens()
+        self.bg, self.imagemSlot, self.imagemBorda, self.logo, self.bIni, self.bSair, self.cartaViradaBlue,self.cartaViradaRed, self.imgPlus, self.bgLetras, self.imgWinP1, self.imgWinP2 = carregarImagens()
 
         
         # Dimensões da imagem de fundo
@@ -239,10 +242,16 @@ class Jogo:
                 # Victory check
                 if self.checarVitoria(self.player1, self.player2) == 1:
                     self.sfxWinP1.play()
+                    self.board.desenharVitoria(self.imgWinP1,self.bgX,self.bgY)
+                    pygame.display.update()
+                    
                 elif self.checarVitoria(self.player1, self.player2) == 2:
                     self.sfxWinP2.play()
+                    self.board.desenharVitoria(self.imgWinP2,self.bgX,self.bgY)
+                    pygame.display.update()
                 else:
                     self.sfxEmpate.play()
+                time.sleep(5)
 
                 #Restart the game
                 self.jogoIniciado = False

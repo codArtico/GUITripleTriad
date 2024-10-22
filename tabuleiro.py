@@ -62,6 +62,9 @@ class Tabuleiro:
         print("Nenhum slot disponível foi clicado.")  # Mensagem para depuração se nenhum slot foi clicado
         return False  # Nenhum slot disponível foi clicado
 
+    def desenharVitoria(self,img,bgX,bgY):
+        self.tela.blit(img,(bgX,bgY))
+
 
     def desenharTabuleiro(self, bg, turno, bgX, bgY):
         self.tela.blit(bg, (bgX, bgY))
