@@ -43,6 +43,7 @@ class Carta:
         self.visual = self.desenharCarta(200,200)
         self.selected = False
         self.pos = None
+        self.hovered = False
 
         # Calcula a posição inicial baseada em valores relativos à tela
         x = 1366 * posicaoProp[0]

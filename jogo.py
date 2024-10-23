@@ -151,7 +151,19 @@ class Jogo:
             if carta.rect.collidepoint(posMouse):
                 carta.selected = True
                 print(f'Carta selecionada')
-                return carta  # Retorna a carta clicada
+                return carta,True  # Retorna a carta clicada
+
+        return None,False
+
+    def processarHover(self, posMouse, vez):
+        cartas = self.player1.cartasSelecionadas if vez == 1 else self.player2.cartasSelecionadas
+        
+        for carta in cartas:
+            if carta and carta.rect.collidepoint(posMouse):
+                carta.hovered = True
+            elif carta:
+                # Volta ao tamanho normal caso o hover tenha saído
+                carta.hovered = False
 
         return None
 
@@ -162,6 +174,8 @@ class Jogo:
 
         while self.running:
             self.fps.tick(30)
+            mouseX, mouseY = pygame.mouse.get_pos()
+            self.processarHover((mouseX,mouseY),turno)
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:  # Sai do modo fullscreen
@@ -190,10 +204,9 @@ class Jogo:
                             exit()
                     else:
                         if not self.select:
-                            cartaSelecionada = self.processarEventoClique((mouseX, mouseY), turno)
+                            cartaSelecionada,self.select = self.processarEventoClique((mouseX, mouseY), turno)
                             placed = False
                             if cartaSelecionada:
-                                self.select = True
                                 print("Select recebeu true")
                         else:
                             if cartaSelecionada:
@@ -232,7 +245,7 @@ class Jogo:
                                         print("Problema na seleção de slot")            
                                 if not placed:
                                     cartaSelecionada.selected = False
-                                    cartaSelecionada = self.processarEventoClique((mouseX, mouseY), turno)
+                                    cartaSelecionada,self.select = self.processarEventoClique((mouseX, mouseY), turno)
 
                             else:
                                 print("Problema na seleção da carta")                       

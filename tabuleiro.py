@@ -183,6 +183,8 @@ class Tabuleiro:
         larguraTela = self.tela.get_width()
         posX = larguraTela - larguraTela + 50
         posY = alturaTela // 2 - 300
+        mousePos = pygame.mouse.get_pos()
+        
         if turno == 1:
             cartas = self.p1.cartasSelecionadas
         else:
@@ -191,13 +193,19 @@ class Tabuleiro:
         for i in range(len(cartas)):
             # Verifica se a carta é uma instância da classe Carta
             if isinstance(cartas[i], Carta):
+                if cartas[i].rect.collidepoint(mousePos):
+                    cartas[i].hovered = True
+                else:
+                    cartas[i].hovered = False
+
                 if not cartas[i].selected:
                     imgCarta = cartas[i].visual
                     imgCarta = pygame.transform.smoothscale(imgCarta, (175, 175))  # Redimensiona a imagem da carta
+
                 else:
                     imgCarta = cartas[i]
                     imgCarta = imgCarta.desenharCarta(202,202)
-                
+                    
                 # Redimensiona o rect da carta
                 newLargura = 120
                 newAltura = 150
@@ -207,6 +215,15 @@ class Tabuleiro:
 
                 imgRect = imgCarta.get_rect(center=cartas[i].rect.center)
                 cartas[i].pos = imgRect.topleft
+
+                if cartas[i].hovered:
+                    overlay = imgCarta.copy()  # Copia a imagem da carta para aplicar uma sobreposição
+                    overlay.fill((50, 50, 50), special_flags=pygame.BLEND_RGB_ADD)  # Clareamento leve
+                    self.tela.blit(overlay, imgRect.topleft)
+                    
+                else:
+                    self.tela.blit(imgCarta, imgRect.topleft)
+        
             else:
                 imgCarta = cartas[i]
                 imgCarta = pygame.transform.smoothscale(imgCarta, (175, 175))
@@ -219,7 +236,7 @@ class Tabuleiro:
                 imgRect = imgCarta.get_rect(center=rect.center)
 
             # Desenha a carta na tela
-            self.tela.blit(imgCarta, imgRect.topleft)
+                self.tela.blit(imgCarta, imgRect.topleft)
 
             # Atualiza a posição para a próxima carta
             posY += 200
@@ -227,14 +244,14 @@ class Tabuleiro:
                 posX += 150
                 posY = alturaTela // 2 - 200
 
-
-
     def desenharCartasRed(self, turno):
         alturaTela = self.tela.get_height()
         larguraTela = self.tela.get_width()
 
         posX = larguraTela - 180
         posY = alturaTela // 2 - 300  # Altura da linha de 2
+
+        mousePos = pygame.mouse.get_pos()
 
         if turno == 2:
             cartas = self.p2.cartasSelecionadas
@@ -244,42 +261,46 @@ class Tabuleiro:
         for i in range(len(cartas)):
             # Verifica se a carta é uma instância da classe Carta
             if isinstance(cartas[i], Carta):
+                if cartas[i].rect.collidepoint(mousePos):
+                    cartas[i].hovered = True
+                else:
+                    cartas[i].hovered = False
+
                 if not cartas[i].selected:
                     imgCarta = cartas[i].visual
                     imgCarta = pygame.transform.smoothscale(imgCarta, (175, 175))  # Redimensiona a imagem da carta
                 else:
-                    imgCarta = cartas[i]
-                    imgCarta = imgCarta.desenharCarta(202,202)
-                    #imgCarta = pygame.transform.smoothscale(imgCarta, (205, 205))
-                
-                # Cria um rect para a carta com tamanho 120x150
-                cartas[i].rect = imgCarta.get_rect(size=(120, 150))
+                    imgCarta = cartas[i].desenharCarta(202, 202)
+
+                # Cria um rect manualmente para a carta com tamanho 120x150
+                cartas[i].rect = pygame.Rect(0, 0, 120, 150)
                 cartas[i].rect.center = (posX + 60, posY + 75)  # Centraliza o rect
 
-                # Desenha a carta na tela usando seu rect
-                # Desloca a imagem para que fique centralizada no rect
+                # Desenha a carta na tela
                 imgRect = imgCarta.get_rect(center=cartas[i].rect.center)
-                
                 cartas[i].pos = imgRect.topleft
+
+                # Aplica uma sobreposição ao hover
+                if cartas[i].hovered:
+                    overlay = imgCarta.copy()  # Copia a imagem da carta para aplicar uma sobreposição
+                    overlay.fill((50, 50, 50), special_flags=pygame.BLEND_RGB_ADD)  # Clareamento leve
+                    self.tela.blit(overlay, imgRect.topleft)
+                else:
+                    self.tela.blit(imgCarta, imgRect.topleft)
+
             else:
-                imgCarta = cartas[i]
-                imgCarta = pygame.transform.smoothscale(imgCarta, (175, 175))
-
-                # Se for uma imagem de carta virada, cria um rect para ela com tamanho 120x150
-                rect = imgCarta.get_rect(size=(120, 150))
-                rect.center = (posX + 60, posY + 75)  # Centraliza o rect
-
-                # Desenha a carta na tela usando o rect criado
+                # Desenha a carta virada se não for instância de Carta
+                imgCarta = pygame.transform.smoothscale(cartas[i], (175, 175))
+                rect = pygame.Rect(0, 0, 120, 150)
+                rect.center = (posX + 60, posY + 75)
                 imgRect = imgCarta.get_rect(center=rect.center)
-                
-            self.tela.blit(imgCarta, imgRect.topleft)
+                self.tela.blit(imgCarta, imgRect.topleft)
 
             # Atualiza a posição para a próxima carta
             posY += 200
             if i == 2 and len(cartas) > 3:
                 posX -= 150
                 posY = alturaTela // 2 - 200
-
 
     def getAdversario(self, p):
         return self.p1 if p == self.p2 else self.p2
