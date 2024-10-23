@@ -213,13 +213,14 @@ class Jogo:
                                 for (linha, coluna), slot in self.board.slots.items():
                                     print(f"Checking slot at ({linha}, {coluna}) with rect: {slot['rect']}")
                                     if slot['rect'].collidepoint(mouseX,mouseY):
-                                        placed = True
                                         posInicial = cartaSelecionada.pos
                                         posFinal = slot['rect'].topleft
-                                        cartaSelecionada.animarMovimento(self.telaPrincipal, posInicial, posFinal, self.bg, turno, self.bgX, self.bgY, self.board)
-                                        self.sfxColocarCarta.play()
+                                        
                                         print(f"Slot at ({linha}, {coluna}) was clicked.")
-                                        if self.board.slots[(linha, coluna)]['carta'] is None:  # Check if the slot is empty
+                                        if self.board.slots[(linha, coluna)]['carta'] is None:
+                                            placed = True
+                                            cartaSelecionada.animarMovimento(self.telaPrincipal, posInicial, posFinal, self.bg, turno, self.bgX, self.bgY, self.board)
+                                            self.sfxColocarCarta.play()
                                             cartaSelecionada.visual = cartaSelecionada.desenharCarta(200,200)
                                             self.board.colocarCarta(cartaSelecionada, linha, coluna, turno)
                                             self.select = False
@@ -240,7 +241,8 @@ class Jogo:
                                             cartaSelecionada = None  # Reset the selected card
                                             turno = self.switchTurno(turno)
                                             break  # Exit the loop after placing the card
-          
+                                        else:
+                                            placed = False
                                     else:
                                         print("Problema na seleção de slot")            
                                 if not placed:
