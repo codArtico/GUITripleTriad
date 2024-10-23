@@ -8,6 +8,22 @@ from random import randint
 import time
 
 def carregarImagens():
+    """
+    Carrega todas as imagens necessárias para o jogo
+
+    :return bg (pygame.Surface): A imagem de fundo do jogo. 
+    :return imagemSlot (pygame.Surface): A imagem do slot. 
+    :return imagemBorda (pygame.Surface): A borda do tabuleiro, que divide os slots. 
+    :return logo (pygame.Surface): A logo do jogo. 
+    :return bIni (pygame.Surface): A imagem do botão "Iniciar". 
+    :return bSair (pygame.Surface): A imagem do botão "Sair". 
+    :return cartaViradaBlue (pygame.Surface): A imagem do verso das cartas azuis. 
+    :return cartaViradaRed (pygame.Surface): A imagem do verso das cartas vermelhas. 
+    :return imgPlus (pygame.Surface): A imagem da captura "Plus". 
+    :return bgLetras (pygame.Surface): O background para a troca de turnos durante o jogo. 
+    :return imgWinP1 (pygame.Surface): Uma imagem para ser mostrada quando a vitória for do Player 1.
+    :return imgWinP2 (pygame.Surface): Uma imagem para ser mostrada quando a vitória for do Player 2.
+    """
     icon = pygame.image.load(os.path.join('imagens', 'icon.ico'))
     pygame.display.set_icon(icon)
 
@@ -35,12 +51,26 @@ def carregarImagens():
     bgLetras = pygame.image.load(os.path.join('imagens', 'bgLetras.png'))
     bgLetras = pygame.transform.smoothscale(bgLetras,(257,50))
 
-    imgWinP1 = pygame.image.load(os.path.join('imagens', 'winP1Esse.png')) 
-    imgWinP2 = pygame.image.load(os.path.join('imagens', 'winP2Esse.png'))
+    imgWinP1 = pygame.image.load(os.path.join('imagens', 'winP1.png')) 
+    imgWinP2 = pygame.image.load(os.path.join('imagens', 'winP2.png'))
 
     return bg, imagemSlot, imagemBorda, logo, bIni, bSair, cartaViradaBlue, cartaViradaRed, imgPlus, bgLetras, imgWinP1, imgWinP2
 
+
 def carregarSfxs():
+    """
+    Carrega todas as faixas de áudio necessárias para o jogo.
+
+    :return sfxCaptura (pygame.mixer.Sound): Efeito sonoro para a captura de cartas.
+    :return sfxColocarCarta (pygame.mixer.Sound): Efeito sonoro para ser acionado quando uma carta é colocada no tabuleiro.
+    :return sfxPlus (pygame.mixer.Sound): Efeito sonoro para ser acionado quando uma captura é feito pela regra "Plus".
+    :return sfxVitoria (pygame.mixer.Sound): Efeito sonoro para vitórias.
+    :return sfxBotao (pygame.mixer.Sound): Efeito sonoro para o clique de botões.
+    :return sfxEmpate (pygame.mixer.Sound): Efeito sonoro para empates.
+    :return sfxWinP1 (pygame.mixer.Sound): Efeito sonoro para a vitória do Player 1.
+    :return sfxWinP2 (pygame.mixer.Sound): Efeito sonoro para a vitória do Player 1.
+    :return sfxCardPick (pygame.mixer.Sound): Efeito sonoro para ser acionado quando uma carta é escolhida.
+    """
     sfxCaptura = pygame.mixer.Sound(os.path.join('audios','capture.mp3'))
     sfxColocarCarta = pygame.mixer.Sound(os.path.join('audios','placeCard.mp3'))
     sfxPlus = pygame.mixer.Sound(os.path.join('audios','plus.mp3'))
@@ -53,9 +83,19 @@ def carregarSfxs():
 
     return sfxCaptura, sfxColocarCarta, sfxPlus, sfxVitoria, sfxBotao, sfxEmpate, sfxWinP1, sfxWinP2, sfxCardPick
 
+
 # Classe Game para gerenciar o fluxo do jogo
 class Jogo:
     def __init__(self, larguraTela, alturaTela):
+        """
+        Inicializa as configurações essenciais para o andamento do jogo. Ao iniciar, o jogo não está iniciado.
+        
+        :param larguraTela (int): The width of the screen.
+        :param alturaTela (int): The height of the screen.
+
+        Returns:
+        None
+        """
         pygame.init()
         self.telaPrincipal = pygame.display.set_mode((larguraTela, alturaTela), pygame.FULLSCREEN)
         pygame.display.set_caption("Triple Triad")
@@ -65,11 +105,11 @@ class Jogo:
 
         self.bg, self.imagemSlot, self.imagemBorda, self.logo, self.bIni, self.bSair, self.cartaViradaBlue,self.cartaViradaRed, self.imgPlus, self.bgLetras, self.imgWinP1, self.imgWinP2 = carregarImagens()
 
-        
+
         # Dimensões da imagem de fundo
         self.bgLargura, self.bgAltura = self.bg.get_size()
 
-            # Calcular a posição para centralizar a imagem de fundo
+        # Calcular a posição para centralizar a imagem de fundo
         self.bgX = (larguraTela - self.bgLargura) // 2
         self.bgY = (alturaTela - self.bgAltura) // 2
 
@@ -93,24 +133,46 @@ class Jogo:
         pygame.mixer.music.set_volume(0.6)
         pygame.mixer.music.play(loops=-1)
 
-
     @staticmethod
     def checarVitoria(p1, p2):
+        """
+        Checa o vencedor baseado na pontuação dos Players.
+
+        :param p1 (Player): O player 1.
+        :param p2 (Player): O player 2.
+
+        :return int 1: Se o Player 1 venceu
+        :return int 2: Se o Player 2 venceu
+        :return None: Se foi empate
+        """
         if p1.pontos > p2.pontos:
             return 1
         elif p2.pontos > p1.pontos:
             return 2
         else:
             return None
-        
+
     @staticmethod
     def switchTurno(turno):
+        """
+        Troca de turno do Player 1 para o Player 2 e vice versa.
+
+        :param turno (int): The current player's turn. It should be either 1 or 2.
+        
+        :return int 1: Se o turno atual for 2
+        :return int 2: Se o turno atual for 1
+        """
         if turno == 1:
             return 2
         else:
             return 1
 
     def swap(self):
+        """
+        Seleciona 1 carta aleatoriamente de cada player e as troca.
+
+        :return None:
+        """
         i = randint(0,4)
         c1 = self.player1.cartasSelecionadas.pop(i)
         c1.switchDono(self.player2)
@@ -122,19 +184,34 @@ class Jogo:
 
 
     def animarImagem(self, larguraTela):
+        """
+        Anima o nome "Plus" na tela.
+
+        :param larguraTela (int): The width of the screen.
+
+        :return None:
+        """
         self.animacaoX += self.velAnimacao
 
         if self.animacaoX >= self.telaPrincipal.get_width() / 2 - 350 and self.animacaoPlusAtiva and self.trava:
             time.sleep(1)
             self.trava=False
 
-        # Verifica se a imagem saiu da tela
+        # Check if the image has exited the screen
         if self.animacaoX > larguraTela:
-            self.animacaoPlusAtiva = False # Reinicia a animação
+            self.animacaoPlusAtiva = False  # Reset the animation
             self.animacaoX = -self.imgPlus.get_width()
             self.trava = True
 
+
     def renderizar(self, img):
+        """
+        Renderiza a imagem do "Plus" na tela.
+
+        :param img (pygame.Surface): The image to be rendered on the screen.
+
+        :return None:
+        """
         tempSurface = pygame.Surface(self.telaPrincipal.get_size())
         tempSurface.blit(self.telaPrincipal, (0, 0))
         self.animarImagem(self.telaPrincipal.get_width())
@@ -142,33 +219,85 @@ class Jogo:
         self.telaPrincipal.blit(tempSurface, (0, 0))
         pygame.display.flip()
 
+
     def processarEventoClique(self, posMouse, vez):
+        """
+        Processa os clicks da carta e verifica se alguma carta foi selecionada.
+
+        :param posMouse (tuple): As coordenadas do mouse.
+        :param vez (int): O turno dos Players.
+
+        :return tuple: Uma tupla com a carta selecionada e o indicador de seleção de carta. Se nenhuma carta foi selecionada, a tupla retorna (None,False)
+        """
         cartas = self.player1.cartasSelecionadas if vez == 1 else self.player2.cartasSelecionadas
 
         for carta in cartas:
-            #pygame.draw.rect(self.telaPrincipal, (255, 0, 0), carta.rect, 2)
             pygame.display.flip()
             if carta.rect.collidepoint(posMouse):
                 carta.selected = True
                 print(f'Carta selecionada')
-                return carta,True  # Retorna a carta clicada
+                return carta,True 
 
         return None,False
 
+
     def processarHover(self, posMouse, vez):
+        """
+        Processa o evento Hover nas cartas. Se o mouse estiver sobre a carta, a carta é destacada.
+
+        :param posMouse (tuple): The coordinates of the mouse cursor.
+        :param vez (int): The turn of the players. It should be either 1 or 2.
+
+        :return None:
+        """
         cartas = self.player1.cartasSelecionadas if vez == 1 else self.player2.cartasSelecionadas
-        
+
         for carta in cartas:
             if carta and carta.rect.collidepoint(posMouse):
                 carta.hovered = True
             elif carta:
-                # Volta ao tamanho normal caso o hover tenha saído
                 carta.hovered = False
 
         return None
 
+
     def run(self):
-        turno = 1  # 1 for player 1, 2 for player 2
+        """
+        Função principal que executa o loop do jogo Triple Triad.
+
+        O método `run` controla todo o ciclo de eventos do jogo, incluindo a detecção de cliques, animação de cartas,
+        atualização da interface do jogador e controle de turnos. Além disso, lida com as condições de vitória, pontuação
+        e reinicialização do jogo.
+
+        Atributos:
+            turno (int): Identifica o turno atual do jogador. Alterna entre 1 e 2.
+            cartaSelecionada (Carta): Armazena a carta atualmente selecionada pelo jogador.
+            placed (bool): Flag para verificar se a carta foi colocada com sucesso no tabuleiro.
+
+        Eventos:
+            - Detecta cliques de mouse e interações com o teclado.
+            - Verifica a seleção de cartas e a colocação correta no tabuleiro.
+            - Executa animações de movimento de cartas ao serem colocadas.
+            - Verifica e processa a captura de cartas de acordo com as regras do jogo.
+            - Exibe pontuações, turnos e condições de vitória.
+            - Permite reinicializar o jogo após o término.
+
+        Lógica de jogo:
+            - Inicia o jogo após a interação no menu inicial.
+            - Alterna o turno entre os jogadores.
+            - Verifica as condições de vitória ou empate após a colocação de 9 cartas no tabuleiro.
+            - Reproduz efeitos sonoros e visuais como captura de cartas e vitória.
+            - Reinicializa o tabuleiro e as pontuações quando o jogo termina.
+
+        :param None:
+        :return None:
+
+        Saída:
+            - Atualiza a tela do jogo com o estado atual.
+            - Reinicializa o jogo se uma condição de fim for atendida (como vitória ou empate).
+        """
+
+        turno = 1
         cartaSelecionada = None
         placed = False
 
@@ -181,10 +310,6 @@ class Jogo:
                     if event.key == pygame.K_ESCAPE:  # Sai do modo fullscreen
                         pygame.quit()
                         exit()
-
-
-                # if event.type == pygame.VIDEORESIZE:
-                #     self.telaPrincipal = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
 
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     mouseX, mouseY = pygame.mouse.get_pos()
@@ -266,7 +391,7 @@ class Jogo:
                     self.sfxWinP1.play()
                     self.board.desenharVitoria(self.imgWinP1,self.bgX,self.bgY)
                     pygame.display.update()
-                    
+
                 elif self.checarVitoria(self.player1, self.player2) == 2:
                     self.sfxWinP2.play()
                     self.board.desenharVitoria(self.imgWinP2,self.bgX,self.bgY)
@@ -279,7 +404,7 @@ class Jogo:
                 self.jogoIniciado = False
                 self.player1 = Player(1)
                 self.player2 = Player(2)
-                
+
                 # Recrie o tabuleiro com as dimensões originais
                 self.board = Tabuleiro(self.telaPrincipal, self.imagemSlot, self.imagemBorda, LARGURA_TELA,
                                     ALTURA_TELA, self.player1, self.player2, self.cartaViradaBlue,

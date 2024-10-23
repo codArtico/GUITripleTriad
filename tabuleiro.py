@@ -15,16 +15,28 @@ oposto = {
     'right': 'left'
 }
 
-
 class Tabuleiro:
     def __init__(self, tela, imgSlot, imgBorda, largura, altura, p1, p2, cartaViradaBlue, cartaViradaRed):
+        """
+        Inicializa a classe Tabuleiro com os parâmetros dados.
+ 
+        :param tela (pygame.Surface): A superficie (ou surface) onde o tabuleiro será desenhado.
+        :param imgSlot (pygame.Surface): A imagem dos slots do tabuleiro.
+        :param imgBorda (pygame.Surface): A borda do tabuleiro e divisória dos slots.
+        :param largura (int): A largura do tabuleiro.
+        :param altura (int): A altura do tabuleiro.
+        :param p1 (Player):  O Player 1.
+        :param p2 (Player): O Player 2.
+        :param cartaViradaBlue (pygame.Surface): A imagem da carta virada para baixo.
+        :param cartaViradaRed (pygame.Surface): A imagem da carta virada para baixo.
+        """
         self.tela = tela
         self.imagemSlot = imgSlot
         self.imagemBorda = imgBorda
         self.imagemCartaViradaBlue = cartaViradaBlue
         self.imagemCartaViradaRed = cartaViradaRed
         self.linhas, self.colunas = 3, 3
-        
+
         # Proporções para largura e altura do slot
         slotProp = 0.15  # Porcentagem da largura da tela
         self.larguraSlot = int(largura * slotProp)
@@ -33,7 +45,7 @@ class Tabuleiro:
         self.tamanhoBorda = 5
         self.larguraTabuleiro = self.larguraSlot * self.colunas
         self.alturaTabuleiro = self.alturaSlot * self.linhas
-        
+
         # Centralização do tabuleiro
         self.offsetX = (largura - self.larguraTabuleiro) // 2
         self.offsetY = (altura - self.alturaTabuleiro) // 2
@@ -52,6 +64,15 @@ class Tabuleiro:
         self.p2 = p2
 
     def processarCliqueTabuleiro(self, posicaoMouse, cartaSelecionada, turno):
+        """
+        Processa o clique do mouse no tabuleiro.
+
+        :param posicaoMouse (tuple): As coordenadas do clique do mouse.
+        :param cartaSelecionada (Carta): A carta que está selecionada pelo Player.
+        :param turno (int): O turno atual.
+
+        :return bool: True se a carta for colocada corretamente no tabuleiro, False se não.
+        """
         # Itera pelos slots do tabuleiro para verificar se o clique foi em um slot válido
         for (linha, coluna), slot in self.slots.items():  # Corrigido para usar self.slots diretamente
             if slot['rect'].collidepoint(posicaoMouse):  # Verifica se o clique está dentro do retângulo do slot
@@ -62,11 +83,33 @@ class Tabuleiro:
         print("Nenhum slot disponível foi clicado.")  # Mensagem para depuração se nenhum slot foi clicado
         return False  # Nenhum slot disponível foi clicado
 
+
     def desenharVitoria(self,img,bgX,bgY):
         self.tela.blit(img,(bgX,bgY))
+    def desenharVitoria(self, img, bgX, bgY):
+        """
+        Desenha a imagem do Player vitorioso na tela.
+
+        :param img (pygame.Surface): A imagem que será mostrada na tela.
+        :param bgX (int): A coordenada X da imagem do background.
+        :param bgY (int): A coordenada Y da imagem do background.
+
+        :return None:
+        """
+        self.tela.blit(img, (bgX, bgY))
 
 
     def desenharTabuleiro(self, bg, turno, bgX, bgY):
+        """
+        Desenha o tabuleiro, com os slots e as cartas.
+
+        :param bg (pygame.Surface): The background image to be drawn on the game board.
+        :param turno (int): The current player's turn.
+        :param bgX (int): The x-coordinate of the background image.
+        :param bgY (int): The y-coordinate of the background image.
+
+        :return None:
+        """
         self.tela.blit(bg, (bgX, bgY))
         self.desenharCartasBlue(turno)
         self.desenharCartasRed(turno)
@@ -96,36 +139,64 @@ class Tabuleiro:
                                          posY + (self.alturaSlot - newAltura) // 2, newLargura, newAltura)
                 self.tela.blit(carta.visual, carta.rect.topleft)
 
+
     def colocarCarta(self, carta, linha, coluna, turno):
-    # Verifica se o slot está vazio antes de colocar a carta
+        """
+        Coloca a carta em uma linha e coluna específica.
+
+        :param carta (Carta): A carta que será colocada no tabuleiro.
+        :param linha (int): A linha que a carta será colocada.
+        :param coluna (int): A coluna que a carta será colocada.
+        :param turno (int): O turno atual.
+
+        :return bool: True se a carta for colocada com sucesso no tabuleiro, False se não.
+        """
+        # Check if the slot is empty before placing the card
         if self.slots[(linha, coluna)]['carta'] is None:
-            # Define o tamanho do rect da carta para 175x175
-            carta.rect = pygame.Rect(0, 0, 175, 175)  # Altere para 175x175
-            carta.rect.center = self.slots[(linha, coluna)]['rect'].center  # Centraliza o rect da carta
-            
+            # Set the size of the card's rect to 175x175
+            carta.rect = pygame.Rect(0, 0, 175, 175)  # Adjust to 175x175
+            carta.rect.center = self.slots[(linha, coluna)]['rect'].center  # Center the card's rect
+
             self.slots[(linha, coluna)]['carta'] = carta
             carta.dono = self.p1 if turno == 1 else self.p2
             print(f"Carta colocada em: linha {linha}, coluna {coluna}")
             self.cartasColocadas += 1
-            
-            # Remove a carta da mão do jogador atual
+
+            # Remove the card from the current player's hand
             if turno == 1:
                 self.p1.cartasSelecionadas.remove(carta)
             elif turno == 2:
                 self.p2.cartasSelecionadas.remove(carta)
             return True
         else:
-            print("O slot já está ocupado!")  # Mensagem de depuração se o slot estiver ocupado
+            print("O slot já está ocupado!")  # Debug message if the slot is already occupied
         return False
 
+
     def verificarVizinhas(self, linha, coluna, carta, somCaptura, bg, turno, bgX, bgY, tabuleiro):
+        """
+        Checa as cartas adjacentes e captura as cartas de acordo com as regras do jogo.
+
+        :param linha (int): O indice da linha da carta.
+        :param coluna (int): O indice da coluna da carta.
+        :param carta (Carta): A carta a ser checada suas adjacências..
+        :param somCaptura (pygame.mixer.Sound): O som a ser tocada quando uma catura padrão é realizada.
+        :param bg (pygame.Surface): A tela de background.
+        :param turno (int): O turno atual.
+        :param bgX (int): A coordenada x do background.
+        :param bgY (int): A coordenada y do background.
+        :param tabuleiro (Tabuleiro): O tabbuleiro do jogo.
+
+        :return captura (bool): True se alguma carta foi capturada, False se não.
+        :return (bool): True se a regra PLUS foi aplicada, False se não.
+        """
         captura = False
         plus = False
 
         somas = []
         cartasAdj = {}
 
-        # Itera sobre as direções para encontrar cartas adjacentes
+        # Iterate over the directions to find adjacent cards
         for direcao, (dx, dy) in direcoes.items():
             ax, ay = linha + dx, coluna + dy
 
@@ -144,8 +215,8 @@ class Tabuleiro:
                 if valorAtual > valorAdjacente and cartaAdjacente.dono != carta.dono:
                     # Captura a carta adjacente
                     cartaAdjacente = cartaAdjacente.animaCaptura(self.tela,carta.dono, bg, turno, bgX, bgY, tabuleiro)
-                    
-                    
+
+
                     carta.dono.upPoint()  # Atualiza a pontuação do jogador que capturou a carta
                     self.getAdversario(carta.dono).downPoint()  # Atualiza a pontuação do adversário
                     captura = True
@@ -161,13 +232,13 @@ class Tabuleiro:
                 somaDict[soma] = []
             somaDict[soma].append(direcao)
 
-        # Verifica se há múltiplas direções com o mesmo valor de soma (regra PLUS)
+        # Check if there are multiple directions with the same sum value (PLUS rule)
         for soma, direcoesLista in somaDict.items():
             if len(direcoesLista) > 1:
                 for direcao in direcoesLista:
                     cartaAdj = cartasAdj[direcao]
                     if cartaAdj.dono != carta.dono:
-                        # Captura cartas adjacentes de acordo com a regra PLUS
+                        # Captura cards adjacent according to the PLUS rule
                         cartaAdj = cartaAdj.animaCaptura(self.tela,carta.dono, bg, turno, bgX, bgY, tabuleiro)
                         somCaptura.play()
                         carta.dono.upPoint()
@@ -178,7 +249,15 @@ class Tabuleiro:
 
         return captura, plus
 
+
     def desenharCartasBlue(self, turno):
+        """
+        Desenha as cartas do Player 1 (Blue) na tela, redimensionando e verificando interações com o mouse.
+
+        :param turno (int): O turno atual (1 ou 2).
+        
+        :return None:
+        """
         alturaTela = self.tela.get_height()
         larguraTela = self.tela.get_width()
         posX = larguraTela - larguraTela + 50
@@ -245,6 +324,13 @@ class Tabuleiro:
                 posY = alturaTela // 2 - 200
 
     def desenharCartasRed(self, turno):
+        """
+        Desenha as cartas do Player 2 (Red) na tela, redimensionando e verificando interações com o mouse.
+
+        :param turno (int): O turno atual (1 ou 2).
+        
+        :return None:
+        """
         alturaTela = self.tela.get_height()
         larguraTela = self.tela.get_width()
 
@@ -303,4 +389,10 @@ class Tabuleiro:
                 posY = alturaTela // 2 - 200
 
     def getAdversario(self, p):
+        '''
+        Retorna o adversário de um player.
+
+        :param p (Player): O player de referência.
+        :return (Player): O adversário do player. Player 2 se o Player 1 foi informado e vice-versa.
+        '''
         return self.p1 if p == self.p2 else self.p2
