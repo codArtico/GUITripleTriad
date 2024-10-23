@@ -129,6 +129,9 @@ class Jogo:
         self.distribuindo = False
         self.animacaoPlusAtiva = False
 
+        self.l = None
+        self.r = None
+
         self.mesa = None
         pygame.mixer.music.set_volume(0.6)
         pygame.mixer.music.play(loops=-1)
@@ -343,6 +346,8 @@ class Jogo:
                                         
                                         print(f"Slot at ({linha}, {coluna}) was clicked.")
                                         if self.board.slots[(linha, coluna)]['carta'] is None:
+                                            self.l = linha
+                                            self.c = coluna
                                             placed = True
                                             cartaSelecionada.animarMovimento(self.telaPrincipal, posInicial, posFinal, self.bg, turno, self.bgX, self.bgY, self.board)
                                             self.sfxColocarCarta.play()
@@ -373,13 +378,24 @@ class Jogo:
                                 if not placed:
                                     cartaSelecionada.selected = False
                                     cartaSelecionada,self.select = self.processarEventoClique((mouseX, mouseY), turno)
-
+                                else:
+                                    c = True
+                                    while c:
+                                        
+                                        self.telaPrincipal.blit(Mesa.confirmPlayer(self.telaPrincipal,turno-1,self.bg,self.bgX,self.bgY),(0,0))
+                                        
+                                        for event in pygame.event.get():
+                                            if event.type == pygame.MOUSEBUTTONDOWN:
+                                                c = False
+                                        pygame.display.update()
                             else:
                                 print("Problema na seleção da carta")                       
             if not self.jogoIniciado:
                 self.menuInicial.desenharMenu()
             else:
                 self.board.desenharTabuleiro(self.bg, turno, self.bgX, self.bgY)
+                if self.l is not None and self.c is not None:
+                    pygame.draw.rect(self.telaPrincipal, (0, 255, 0), self.board.slots[(self.l, self.c)]['carta'].rect, width=1)
                 self.player1.desenharPontuacao(self.telaPrincipal, LARGURA_TELA*0.1, 20)  # Exibe a pontuação do player 1 no canto superior esquerdo
                 self.player2.desenharPontuacao(self.telaPrincipal, LARGURA_TELA * 0.8, 20)  # Exibe a pontuação do player 2 logo abaixo
                 Mesa.desenharTurno(self.telaPrincipal,self.player1,self.player2,turno-1,False,self.bgLetras)

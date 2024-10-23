@@ -85,7 +85,19 @@ class Mesa:
             if carta.rect.collidepoint(mouseX, mouseY):
                 return carta
         return None
-
+    @staticmethod
+    def confirmPlayer(tela,turno,bg,bgX,bgY):
+        font = pygame.font.Font(None, 36)
+        txt = f'Player {turno + 1}, clique na tela para continuar!'
+        txt = font.render(txt, True, (255, 255, 255))
+        tela.blit(bg, (bgX, bgY))
+        dark = pygame.Surface((LARGURA_TELA, ALTURA_TELA))
+        dark.fill(pygame.Color(0, 0, 0))
+        dark.set_alpha(int(255 / 100 * 70))  # Para editar em porcentagem
+        tela.blit(dark, (0, 0))
+        tela.blit(txt, (LARGURA_TELA // 2 - txt.get_width() // 2, ALTURA_TELA // 2 - txt.get_height() // 2))
+        return tela
+        
     def distribuirCartas(self, tela, bg, bgX, bgY, sfxCardPick, p1, p2, bgLetras):
         """
         Distribui cartas entre os jogadores.
@@ -112,14 +124,7 @@ class Mesa:
                         if event.key == pygame.K_ESCAPE:
                             pygame.quit()
                             exit()
-                txt = f'Player {self.turnoAtual + 1}, clique na tela para continuar!'
-                txt = font.render(txt, True, (255, 255, 255))
-                tela.blit(bg, (bgX, bgY))
-                dark = pygame.Surface((LARGURA_TELA, ALTURA_TELA))
-                dark.fill(pygame.Color(0, 0, 0))
-                dark.set_alpha(int(255 / 100 * 70))  # Para editar em porcentagem
-                tela.blit(dark, (0, 0))
-                tela.blit(txt, (LARGURA_TELA // 2 - txt.get_width() // 2, ALTURA_TELA // 2 - txt.get_height() // 2))
+                self.confirmPlayer(tela,self.turnoAtual,bg,bgX,bgY)
                 pygame.display.update()
             key = False
             self.cartasMesa = [Carta(None) for _ in range(self.quantCartas)]

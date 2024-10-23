@@ -139,7 +139,6 @@ class Tabuleiro:
                                          posY + (self.alturaSlot - newAltura) // 2, newLargura, newAltura)
                 self.tela.blit(carta.visual, carta.rect.topleft)
 
-
     def colocarCarta(self, carta, linha, coluna, turno):
         """
         Coloca a carta em uma linha e coluna específica.
