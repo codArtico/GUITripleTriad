@@ -158,6 +158,7 @@ class Jogo:
     def run(self):
         turno = 1  # 1 for player 1, 2 for player 2
         cartaSelecionada = None
+        placed = False
 
         while self.running:
             self.fps.tick(30)
@@ -190,6 +191,7 @@ class Jogo:
                     else:
                         if not self.select:
                             cartaSelecionada = self.processarEventoClique((mouseX, mouseY), turno)
+                            placed = False
                             if cartaSelecionada:
                                 self.select = True
                                 print("Select recebeu true")
@@ -198,6 +200,7 @@ class Jogo:
                                 for (linha, coluna), slot in self.board.slots.items():
                                     print(f"Checking slot at ({linha}, {coluna}) with rect: {slot['rect']}")
                                     if slot['rect'].collidepoint(mouseX,mouseY):
+                                        placed = True
                                         posInicial = cartaSelecionada.pos
                                         posFinal = slot['rect'].topleft
                                         cartaSelecionada.animarMovimento(self.telaPrincipal, posInicial, posFinal, self.bg, turno, self.bgX, self.bgY, self.board)
@@ -224,11 +227,15 @@ class Jogo:
                                             cartaSelecionada = None  # Reset the selected card
                                             turno = self.switchTurno(turno)
                                             break  # Exit the loop after placing the card
-                                                
+          
                                     else:
                                         print("Problema na seleção de slot")            
+                                if not placed:
+                                    cartaSelecionada.selected = False
+                                    cartaSelecionada = self.processarEventoClique((mouseX, mouseY), turno)
+
                             else:
-                                print("Problema na seleção da carta")                        
+                                print("Problema na seleção da carta")                       
             if not self.jogoIniciado:
                 self.menuInicial.desenharMenu()
             else:

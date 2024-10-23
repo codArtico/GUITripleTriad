@@ -2,7 +2,6 @@ from configs import *
 
 class Player:
     def __init__(self, nump):
-        self.deck = []
         self.pontos = 5
         self.numPlayer = nump
         self.cartasSelecionadas = []  # Atributo para armazenar cartas selecionadas
