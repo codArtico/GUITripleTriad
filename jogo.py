@@ -56,7 +56,6 @@ def carregarImagens():
 
     return bg, imagemSlot, imagemBorda, logo, bIni, bSair, cartaViradaBlue, cartaViradaRed, imgPlus, bgLetras, imgWinP1, imgWinP2
 
-
 def carregarSfxs():
     """
     Carrega todas as faixas de áudio necessárias para o jogo.
@@ -82,7 +81,6 @@ def carregarSfxs():
     sfxCardPick = pygame.mixer.Sound(os.path.join('audios','cardPick.wav'))
 
     return sfxCaptura, sfxColocarCarta, sfxPlus, sfxVitoria, sfxBotao, sfxEmpate, sfxWinP1, sfxWinP2, sfxCardPick
-
 
 # Classe Game para gerenciar o fluxo do jogo
 class Jogo:
@@ -303,7 +301,7 @@ class Jogo:
         turno = 1
         cartaSelecionada = None
         placed = False
-
+        
         while self.running:
             self.fps.tick(30)
             mouseX, mouseY = pygame.mouse.get_pos()
