@@ -145,10 +145,11 @@ class Mesa:
                     if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                         mouseX, mouseY = pygame.mouse.get_pos()
                         cartaEscolhida = self.selecionarCarta(mouseX, mouseY)
-                        self.quantCartas -= 1
-                        sfxCardPick.play()
+                        
 
             if cartaEscolhida:
+                self.quantCartas -= 1
+                sfxCardPick.play()
                 self.cartasMesa.remove(cartaEscolhida)
 
                 cartaEscolhida.switchDono(jogadorAtual)
