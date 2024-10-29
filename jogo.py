@@ -334,6 +334,8 @@ class Jogo:
                             placed = False
                             if cartaSelecionada:
                                 print("Select recebeu true")
+                                self.sfxCardPick.play()
+                                
                         else:
                             if cartaSelecionada:
                                 for (linha, coluna), slot in self.board.slots.items():
