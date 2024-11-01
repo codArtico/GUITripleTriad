@@ -6,6 +6,7 @@ from carta import *
 from mesa import *
 from random import randint
 import time
+import sys
 
 def carregarImagens():
     """
@@ -24,37 +25,38 @@ def carregarImagens():
     :return imgWinP1 (pygame.Surface): Uma imagem para ser mostrada quando a vitória for do Player 1.
     :return imgWinP2 (pygame.Surface): Uma imagem para ser mostrada quando a vitória for do Player 2.
     """
-    icon = pygame.image.load(os.path.join('imagens', 'icon.ico'))
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    icon = pygame.image.load(os.path.join(base_path, 'imagens', 'icon.ico'))
     pygame.display.set_icon(icon)
 
-    bg = pygame.image.load(os.path.join('imagens', 'fundo.png'))
-
-    imagemSlot = pygame.image.load(os.path.join('imagens', 'slot.png'))
-    imagemBorda = pygame.image.load(os.path.join('imagens', 'borda.png'))
-    logo = pygame.image.load(os.path.join('imagens', 'logo.png'))
+    bg = pygame.image.load(os.path.join(base_path, 'imagens', 'fundo.png'))
+    imagemSlot = pygame.image.load(os.path.join(base_path, 'imagens', 'slot.png'))
+    imagemBorda = pygame.image.load(os.path.join(base_path, 'imagens', 'borda.png'))
+    logo = pygame.image.load(os.path.join(base_path, 'imagens', 'logo.png'))
     logo = pygame.transform.smoothscale(logo, (400, 400))
 
-    bIni = pygame.image.load(os.path.join('imagens', 'iniciar.png'))
+    bIni = pygame.image.load(os.path.join(base_path, 'imagens', 'iniciar.png'))
     bIni = pygame.transform.smoothscale(bIni, (350, 85))
-    bSair = pygame.image.load(os.path.join('imagens', 'sair.png'))
+    bSair = pygame.image.load(os.path.join(base_path, 'imagens', 'sair.png'))
     bSair = pygame.transform.smoothscale(bSair, (350, 85))
 
-    cartaViradaBlue = pygame.image.load(os.path.join('imagens', 'versoCartaBlue.png'))
+    cartaViradaBlue = pygame.image.load(os.path.join(base_path, 'imagens', 'versoCartaBlue.png'))
     cartaViradaBlue = pygame.transform.smoothscale(cartaViradaBlue, (175, 175))
 
-    cartaViradaRed = pygame.image.load(os.path.join('imagens', 'versoCartaRed.png'))
+    cartaViradaRed = pygame.image.load(os.path.join(base_path, 'imagens', 'versoCartaRed.png'))
     cartaViradaRed = pygame.transform.smoothscale(cartaViradaRed, (175, 175))
 
-    imgPlus = pygame.image.load(os.path.join('imagens', 'imgPlus.png'))
+    imgPlus = pygame.image.load(os.path.join(base_path, 'imagens', 'imgPlus.png'))
     imgPlus = pygame.transform.smoothscale(imgPlus, (800, 800))
 
-    bgLetras = pygame.image.load(os.path.join('imagens', 'bgLetras.png'))
-    bgLetras = pygame.transform.smoothscale(bgLetras,(257,50))
+    bgLetras = pygame.image.load(os.path.join(base_path, 'imagens', 'bgLetras.png'))
+    bgLetras = pygame.transform.smoothscale(bgLetras, (257, 50))
 
-    imgWinP1 = pygame.image.load(os.path.join('imagens', 'winP1.png')) 
-    imgWinP2 = pygame.image.load(os.path.join('imagens', 'winP2.png'))
+    imgWinP1 = pygame.image.load(os.path.join(base_path, 'imagens', 'winP1.png')) 
+    imgWinP2 = pygame.image.load(os.path.join(base_path, 'imagens', 'winP2.png'))
 
     return bg, imagemSlot, imagemBorda, logo, bIni, bSair, cartaViradaBlue, cartaViradaRed, imgPlus, bgLetras, imgWinP1, imgWinP2
+
 
 def carregarSfxs():
     """
@@ -70,15 +72,16 @@ def carregarSfxs():
     :return sfxWinP2 (pygame.mixer.Sound): Efeito sonoro para a vitória do Player 1.
     :return sfxCardPick (pygame.mixer.Sound): Efeito sonoro para ser acionado quando uma carta é escolhida.
     """
-    sfxCaptura = pygame.mixer.Sound(os.path.join('audios','capture.mp3'))
-    sfxColocarCarta = pygame.mixer.Sound(os.path.join('audios','placeCard.mp3'))
-    sfxPlus = pygame.mixer.Sound(os.path.join('audios','plus.mp3'))
-    sfxVitoria = pygame.mixer.Sound(os.path.join('audios','victory.mp3'))
-    sfxBotao = pygame.mixer.Sound(os.path.join('audios','button.wav'))
-    sfxEmpate = pygame.mixer.Sound(os.path.join('audios','tie.ogg'))
-    sfxWinP1 = pygame.mixer.Sound(os.path.join('audios','WinP1.mp3'))
-    sfxWinP2 = pygame.mixer.Sound(os.path.join('audios','WinP2.mp3'))
-    sfxCardPick = pygame.mixer.Sound(os.path.join('audios','cardPick.wav'))
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    sfxCaptura = pygame.mixer.Sound(os.path.join(base_path, 'audios', 'capture.mp3'))
+    sfxColocarCarta = pygame.mixer.Sound(os.path.join(base_path, 'audios', 'placeCard.mp3'))
+    sfxPlus = pygame.mixer.Sound(os.path.join(base_path, 'audios', 'plus.mp3'))
+    sfxVitoria = pygame.mixer.Sound(os.path.join(base_path, 'audios', 'victory.mp3'))
+    sfxBotao = pygame.mixer.Sound(os.path.join(base_path, 'audios', 'button.wav'))
+    sfxEmpate = pygame.mixer.Sound(os.path.join(base_path, 'audios', 'tie.ogg'))
+    sfxWinP1 = pygame.mixer.Sound(os.path.join(base_path, 'audios', 'WinP1.mp3'))
+    sfxWinP2 = pygame.mixer.Sound(os.path.join(base_path, 'audios', 'WinP2.mp3'))
+    sfxCardPick = pygame.mixer.Sound(os.path.join(base_path, 'audios', 'cardPick.wav'))
 
     return sfxCaptura, sfxColocarCarta, sfxPlus, sfxVitoria, sfxBotao, sfxEmpate, sfxWinP1, sfxWinP2, sfxCardPick
 
