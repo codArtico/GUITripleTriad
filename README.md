@@ -3,7 +3,7 @@
 ![GUITripleTriad](imagens/icon.ico)
 
 ## 🎴 Sobre o Projeto
-GUITripleTriad é uma implementação do famoso jogo de cartas **Triple Triad** (um minigame existente em Final Fantasy VIII) desenvolvida em **Python** com **Pygame** e princípios de **Programação Orientada a Objetos**. Este projeto visa replicar a experiência do jogo com regras avançadas e uma interface gráfica intuitiva.
+GUITripleTriad é uma implementação do famoso jogo de cartas **Triple Triad** (um minigame existente em Final Fantasy VIII) desenvolvida em **Python** com **Pygame**, usando princípios de **Programação Orientada a Objetos** e **Programação Orientada a Eventos**. Este projeto visa replicar a experiência do jogo com regras avançadas e uma interface gráfica intuitiva.
 
 ## 🚀 Tecnologias Utilizadas
 - **Python 3.10+**
