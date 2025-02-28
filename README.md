@@ -43,6 +43,11 @@ git clone https://github.com/codArtico/GUITripleTriad.git
 python jogo.py
 ```
 
+# 📦 Forma Simplificada de rodar o jogo:
+- Clone o repositório
+- Acesse a pasta Dist onde a pasta foi extraida
+- Execute o arquivo "TripleTriad.exe"
+
 # 🎮 Como Jogar
 - Cada jogador escolhe 5 cartas do deck da mesa.
 - As cartas são colocadas em uma grade 3x3.
